@@ -1,0 +1,14 @@
+Maven
+    artifactId is the name of the jar without version. If you created it, then you can choose whatever name you want with lowercase letters and no strange symbols. If it's a third party jar, you have to take the name of the jar as it's distributed. eg. maven, commons-math
+    groupId uniquely identifies your project across all projects. A group ID should follow Java's package name rules. This means it starts with a reversed domain name you control. For example, org.apache.maven, org.apache.commonss
+    
+----------------------
+mvn archetype:generate maven-archetype-quickstart
+
+mvn archetype:generate webapp-javaee7
+
+<dependency>
+    <groupId>org.codehaus.mojo.archetypes</groupId>
+    <artifactId>webapp-javaee7</artifactId>
+    <version>1.1</version>
+</dependency>

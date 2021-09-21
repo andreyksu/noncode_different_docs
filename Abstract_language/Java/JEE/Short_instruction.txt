@@ -1,0 +1,114 @@
+Jax-RS
+
+1. Создать maven проект с архитипом:
+    1.1. Найти нужный архитип.
+
+2. Сконфигурировать pom.xml
+    2.1. Должно прийти через архитип. Остальное докидыввать исходя из потребности.
+
+3. Объявить End-Points
+
+4. Создать необходимы EJB и CDI бины
+
+5. При необходимости создать Entity + Persistance Unit.
+
+6. Для CDI добавляем в каталог src/main/webapp/WEB-INF файл beans.xml
+
+7. В каталог src/main/webapp/ добавляем index.html
+
+
+Generate a Jakarta EE 9 project skeleton from Maven archetype
+https://itnext.io/generate-a-jakarta-ee-9-project-skeleton-from-maven-archetype-2b9fc9ce9bb8
+
+Bootstrap your first Jakarta EE 8 application
+https://rieckpil.de/howto-bootstrap-your-first-jakarta-ee-8-application/
+
+**********
+pom.xml
+**********
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>de.rieckpil.blog</groupId>
+        <artifactId>bootstrap-jakarta-ee-8-application</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <packaging>war</packaging>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>8.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+        <build>
+            <finalName>bootstrap-jakarta-ee-8-application</finalName>
+        </build>
+        <properties>
+            <maven.compiler.source>11</maven.compiler.source>
+            <maven.compiler.target>11</maven.compiler.target>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        </properties>
+    </project>
+
+**********
+build.gradle
+**********
+    gradle
+
+    apply plugin: 'war'
+     
+    group = 'de.rieckpil.blog'
+    version = '1.0-SNAPSHOT'
+     
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
+    }
+     
+    compileJava {
+        targetCompatibility = '11'
+        sourceCompatibility = '11'
+    }
+     
+    war{
+        archiveName 'bootstrap-jakarta-ee-8-application.war'
+    }
+
+
+KeyCloak
+    1. Запуск в виде 
+        /opt/keycloak-19.0.1/bin/kc.sh start-dev  --hostname andrey-a-8 --http-port 9099
+
+    2. Для запуска и доступа к admin
+        - Либо пробрасываем порты через putty. 
+        - Либо перед запуском экспортим линукс переменные 
+            export KEYCLOAK_ADMIN="admin"
+            export KEYCLOAK_ADMIN_PASSWORD="1qaz2wsx"
+
+    3. Переходим в консоль и добавляем realm и пользователей в рамках realm
+
+
+    http://localhost:8080/realms/demo/account           http://localhost:8080/admin/demo/console/
+        komov
+        1qaz
+
+    http://localhost:8080/realms/first/account/         http://localhost:8080/admin/first/console/
+        popov
+        1qaz
+
+    http://localhost:8080/realms/The_first_realm/account/
+        ivanov
+        1qaz
+
+    http://localhost:8080/realms/myrealm/account/
+        myuser
+        1qaz
+
+    4. В созданном realm добавляем clients - по сути сервис, что будет обращаться к KeyCloack
+        Вероятно придётся добавить в поле Valid redirect URIs значение "*"
