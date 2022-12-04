@@ -1,0 +1,54 @@
+Что напечатает:
+
+def scope_test():
+    def do_local():
+        spam = "local spam"
+
+    def do_nonlocal():
+        nonlocal spam
+        spam = "nonlocal spam"
+
+    def do_global():
+        global spam
+        spam = "global spam"
+
+    spam = "test spam"
+    do_local()
+    print("After local assignment:", spam)
+    do_nonlocal()
+    print("After nonlocal assignment:", spam)
+    do_global()
+    print("After global assignment:", spam)
+
+scope_test()
+print("In global scope:", spam)
+
+-------------------------
+Что будет в "a"
+
+a = [1, 2, 3, 4]
+a[0:2] = [5, 6]
+a[0:1] = []
+a[1:1] = [7, 8]
+a[:1] = a
+
+
+-------------------------
+class A:
+	a = "String_1"
+
+	def a(self):
+		print("a() A.a = ", A.a)
+		print("a() self.a = ", self.a)
+
+	def b(self, a):
+		self.a = a
+
+	def c(self):
+		print("c() self.a = ", self.a)
+		print("c A.a = ", A.a)
+
+inst = A()
+inst.a()
+inst.b("String_2")
+inst.c()

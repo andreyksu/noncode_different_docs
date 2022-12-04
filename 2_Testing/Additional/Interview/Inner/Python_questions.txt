@@ -1,0 +1,26 @@
+Различают три пространства имен(области видимости). Встроенное, Глобальное, Локальное
+-------------------------
+import sys
+sys.path.append("path")
+-------------------------
+After local assignment: test spam
+After nonlocal assignment: nonlocal spam (in the nearest enclosing scope excluding globals)
+After global assignment: nonlocal spam
+In global scope: global spam
+-------------------------
+a = [1, 2, 3, 4]
+a[0:2] = [5, 6]     # [5, 6, 3, 4]
+a[0:1] = []         # [6, 3, 4]
+a[1:1] = [7, 8]     # [6, 7, 8, 3, 4]
+a[:1] = a           # [6, 7, 8, 3, 4,   7, 8, 3, 4]
+a[2: -1]            # [8, 3, 4, 7, 8, 3]
+
+-------------------------
+В черм различие is и ==
+
+a = [2, 3]
+b = a[:]
+a == b #True
+a is b #False
+c = a #
+a is c #True

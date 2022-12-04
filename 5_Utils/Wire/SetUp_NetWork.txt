@@ -1,0 +1,170 @@
+Для настроек вам обязательно потребуется имя вашего сетевого адаптера. Его можно узнать из вывода команды:
+$ sudo lshw -C network
+
+-----
+
+Настройка проводной сети
+Настройка IP-адреса, шлюза по умолчанию, маски подсети
+Отредактируйте файл конфигурации /etc/network/interfaces, например так:
+$ sudo nano /etc/network/interfaces 
+И допишите в него:
+Для статического IP:
+    allow-hotplug eth0 - ???
+    iface eth0 inet static 
+    address 192.168.0.1 
+    netmask 255.255.255.0
+    network 192.168.0.0
+    broadcast 192.168.1.255
+    gateway 192.168.0.254
+    dns-nameservers 192.168.0.254 8.8.8.8
+    auto eth0 
+
+Где:
+    iface eth0 inet static - указывает, что интерфейс (iface eth0) находится в диапазоне адресов IPv4 (inet) со статическим ip (static);
+    address 192.168.0.1 - указывает что IP адрес (address) нашей сетевой карты 192.168.0.1;
+    netmask 255.255.255.0 - указывает что наша маска подсети (netmask) имеет значение 255.255.255.0;
+    gateway 192.168.0.254 - адрес шлюза (gateway) по умолчанию 192.168.0.254;
+    dns-nameservers 192.168.0.254 8.8.8.8 - адреса DNS серверов (о ниж мы расскажем позже)
+    auto eth0 - указывет системе что интерфейс eth0 необходимо включать автоматически при загрузке системы с вышеуказанными параметрами.
+    eth0 - имя подключаемого своего интерфейса. 
+    
+Список интерфейсов можно посмотреть набрав:
+    $ ip addr
+    
+В итоге файл /etc/network/interfaces должен выглядеть примерно так:
+(для одного проводного соединения со статическим IP)
+
+    # This file describes the network interfaces available on your system
+    # and how to activate them. For more information, see interfaces(5).
+
+    # The loopback network interface
+    auto lo
+    iface lo inet loopback
+
+    # Моя проводная сеть.
+    iface eth0 inet static 
+    address 192.168.0.1 
+    netmask 255.255.255.0 
+    gateway 192.168.0.254 
+    dns-nameservers 192.168.0.254 8.8.8.8
+    auto eth0 
+    
+Сохраните файл и закройте редактор. В данном примере (редактор nano) - нажмите Ctrl+X, затем Y, убедитесь, что «Имя файла для записи» - /etc/network/interfaces и нажмите Enter.
+    ifdown eth0
+    ifup eth0
+
+Пример конфигурации для динамического IP:
+    allow-hotplug eth0 - нужно ли это?
+    iface eth0 inet dhcp
+    auto eth0 
+
+Список интерфейсов
+    ip link show иди ifconfig
+    
+Настройка динамического IP
+    Сначала включаем интерфейс:
+        sudo ip link set enp0s3 up    
+    Затем с помощью команды dhclient запрашиваем ip:    
+        sudo dhclient enp0s3
+    
+Настройка статического IP
+    Включаем интерфейс:
+        sudo ip link set enp0s3 up
+    Устанавливаем IP-адрес, маску сети и broadcast-адрес для нашего интерфейса:
+        sudo ip addr add 192.168.1.7/255.255.255.0 broadcast 192.168.1.255 dev enp0s3
+    Указываем IP-адрес шлюза:
+        sudo ip route add default via 192.168.1.1
+        
+Как видите, сеть работает. Если хотите поэкспериментировать на машине с рабочей сетью, её можно сбросить командой:
+    sudo ip -4 addr flush dev enp0s3
+---------------------------
+
+Временная настройка IP-адреса и маски подсети
+При необходимости задать пробные настройки, выполните:
+    $ sudo ip addr add 192.168.0.1/24 dev eth0
+    
+Где 192.168.0.1 - наш IP-адрес, /24 - число бит в префиксной части адреса (соответствует маске подсети 255.255.255.0).
+eth0 - подключаемый сетевой интерфейс.
+
+Данные настройки пропадут после перезагрузки системы и не повлияют на файл /etc/network/interfaces
+
+---------------------------
+
+Чтобы посмотреть список открытых портов и названия слушающих их программ, используйте команду:
+    sudo netstat -nlpA inet,inet6
+
+Для вывода информации о конкретном порте можно использовать grep. Например, для 80 порта:
+    sudo netstat -nlpA inet,inet6 | grep :80
+
+---------------------------
+
+Как пробросить порт?
+Например, нужно пробросить порт 8081. Адрес, на который обращается клиент, назовём внешний_ip, а адрес, на который он должен попасть — внутренний_ip.
+    iptables -t nat -A PREROUTING -p tcp -d внешний_ір --dport 8081 -j DNAT --to-destination внутренний_ір:8081
+    iptables -t nat -A POSTROUTING -p tcp --dst внутренний_ір --dport 8081 -j SNAT --to-source внешний_ір
+
+И обязательно нужно что-то вроде
+    iptables -t filter -A FORWARD -m conntrack --ctstate DNAT -j ACCEPT
+
+---------------------------
+Если хотим посмотреть тип соединения, скорость и поддерживаемые параметры, набираем:
+    sudo ethtool eth0
+
+---------------------------
+
+sudo ifconfig eth0 down
+sudo ifconfig eth0 up
+
+service network stop 
+/etc/init.d/network stop
+
+/etc/init.d/network restart
+
+sudo service networking restart
+sudo systemctl restart networking
+--------------------------------
+Вариант № 2. RedHat-based дистрибутивы (OpenSuse, CentOS, Fedora)
+Наш файл с настройками сети Linux находится здесь:
+    /etc/sysconfig/network-scripts/ifcfg-eth0
+
+Мы открываем его с помощью nano или vim:
+    vim /etc/sysconfig/network-scripts/ifcfg-eth0
+
+Если нужно обеспечить автоматическое получение настроек от DHCP-сервера:
+    DEVICE=eth0
+    BOOTPROTO=dhcp
+    HWADDR=00-1C-1B-11-F6-07
+    ONBOOT=yes
+
+А вот статический IP-адрес:
+    BOOTPROTO="static" - нужно ли это?
+    PREFIX=24 - нужно ли это?
+    DEVICE=eth0
+    HWADDR=00-1C-1B-11-F6-07
+    IPADDR=192.168.1.2
+    NETMASK=255.255.255.0
+    BROADCAST=192.168.1.255
+    GATEWAY=192.168.1.1
+    ONBOOT=yes
+
+В этом случае IP-адреса DNS-серверов прописываются в файле:
+    /etc/resolv.conf
+
+Вот, к примеру, для публичных DNS-серверов от Google:
+    nameserver 8.8.8.8
+    nameserver 8.8.4.4
+
+В принципе, это всё, и настройка сети в Linux завершилась. Осталось лишь выполнить перезапуск сети:
+    service network restart
+
+Можно и так:
+    /etc/init.d/network restart
+    
+    
+    
+--------------------------
+Решаем проблему с Grub Rescue Unknown Filesystem
+    https://otus.ru/nest/post/2606/
+    
+Тонкая настройка сети в Linux
+    https://habr.com/ru/companies/otus/articles/716962/

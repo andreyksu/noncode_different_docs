@@ -1,0 +1,4 @@
+Grep
+
+Хорошо расписано про квантификаторы
+	https://learn.javascript.ru/regexp-greedy-and-lazy

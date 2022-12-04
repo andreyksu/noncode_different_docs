@@ -1,0 +1,207 @@
+Запись в Postgres bytea
+    Use pg_read_file('location_of file')::bytea.
+        For example,
+            create table test(id int, image bytea);
+            insert into test values (1, pg_read_file('/home/xyz')::bytea);
+
+
+Генерация файла любого размера:
+    dd if=/dev/urandom of=testfile bs=1024 count=1024000
+
+
+Экспорт переменных в Windows через командную строчку:
+    setx M2_HOME "C:\Utils\apache-maven-3.8.6"
+    setx PATH "%M2_HOME%\bin;%JAVA_HOME%\bin"
+    
+Объем оперативной  памяти занимаемой Postrges
+    ps -u postgres o pid= | sed 's# *\(.*\)#/proc/\1/smaps#' | xargs sudo grep ^Pss: | awk '{A+=$2} END{print A}'
+        
+    https://postgrespro.ru/list/thread-id/1165495
+
+Curl для запроса возможных должностей
+    curl -L --location-trusted --negotiate -u off0105:_off0105 -X GET "http://dev-14/dogmat/server-mgmt/index.php/positions" -H  "accept: application/json" -v
+    
+for d in dir/*/; do touch -- "$d/index.html"; done
+find ./ -type f -exec sed -i 's/URL_FOR_APP_SERVER//g' {} \;
+
+find ./ -type d  | exec sort -r | while read P; do find $P -type f -exec pdpl-file -v "0:0:0x0" {} \; && pdpl-file "0:0:0x0" $P; done
+
+
+Здесь находится 
+    ssh://admin1:@192.168.216.21:22/mnt/disk1/nfs_shares/bamboo/npovs/all_agent_distr/sikuli_tests/dogmat/install/ 
+
+
+Назад смотрящее утверждение:
+    https://intuit.ru/studies/courses/42/42/lecture/27199?page=1 - Хорошая статья
+    
+    grep -Prio "(?<=suid ===== )(\d){0,8}" tmp.log # Эта часть отвечат за назад-смотрящее условие ?<=
+    
+    Ищем цифры в количестве от 0 до 8 и перед ни должена идти строка 'suid ===== ' - но в результате поиска не учитывать эту идущую строчку.
+    
+Просмотр кол. сообщений?
+    mailq
+    
+Усечь файл до 0
+    truncate -s 0 aFile
+    
+Jboss
+    /opt/jboss-as/bin/jboss-cli.sh --connect
+    
+    /subsystem=messaging-activemq/server=default/jms-queue=ru.npovs.z22.docflow.exchange.msa.receivers.OpenViewACKQueue:read-resource(include-runtime=true, recursive=true)
+    /subsystem=ejb3/thread-pool=default:read-resource(include-runtime=true, recursive=true)
+
+Монтирование нового раздела:
+    Просмотр доступных дисков
+        lsblk -f
+    
+    Форматирование 
+        mkfs -t ext4 /dev/sd...
+        mkfs -t ntfs /dev/sd...
+        
+    Монтирование
+        mount -t auto /dev/sd... [mountpoint]
+        
+    Отмонтирование:
+        umount -l /dev/sd...
+        
+Изменение мандатной метки у файла.
+    – тип метки ccnr применяется к объектам-контейнерам и определяет, что объект контейнер может содержать объекты с различными мандатными метками, но не превышающими метку объекта контейнера;
+    – тип метки ccnri применяется к объектам-контейнерам и определяет, что объект контейнер может содержать объекты с различными уровнями целостности, но не превышающими уровень целостности объекта-контейнера;
+    – тип метки ehole применяется к объектам-контейнерам и простым объектам для игнорирования мандатных правил разграничения доступа к ним.
+
+
+    pdpl-file 2:0:0:ccnr /opt/lib/public/files/
+    pdpl-file -R 2:0:0:ccnr /opt/lib/public/files/library/
+    
+    Поскольку операция создания файла в каталоге является операцией записи, классификационные метки каталога и файла должны совпадать. Т.е. в каталогах с нулевой меткой безопасности (0:0:0:0) при отсутствии специальных флагов (см. ниже) могут содержаться только файлы с нулевой меткой безопасности (0:0:0:0).
+    Флаг ccnr позволяет находиться внутри директории файлам, мандатная метка которых ниже чем мандатная метка самой директории:
+        pdpl-file 2:0:0:ccnr /home/.pdp/teacher/l2i0c0x0t0x0/.fly/theme/
+    Установка файлу мандатной метки (для созданного нового файла с нулевой меткой - предполагается. что мы его создавали из под root):
+        pdpl-file 2:0:0 /home/.pdp/teacher/l2i0c0x0t0x0/.fly/theme/current.themerc
+    У директории надо убрать флаг ccnr через команду "вычитания" мандатных прав:
+        pdpl-file -s 2:0:0:ccnr /home/.pdp/teacher/l2i0c0x0t0x0/.fly/theme/
+    Судя по рекомендациям поддержки, данную команду можно заменить следующей командой прямой установки мандатных прав, с нулевым флагом (четвертое поле мандатных прав):
+        pdpl-file 2:0:0:0 /home/.pdp/teacher/l2i0c0x0t0x0/.fly/theme/
+    
+Astra_1.6 Подключение по удалёнке
+   https://wiki.astralinux.ru/pages/viewpage.action?pageId=57443684
+    
+    -------------------------------
+    usercaps off0327 просмотр привелегий.
+    usermac off0327
+    pdpl-user off0327
+    fly-admin-smc &
+    -------------------------------
+    pdpl-user off0327
+    pdpl-ps
+    pdpl-ps -L
+    pdpl-ps 0
+    pdpl-ps 1
+    pdpl-ps 0
+    sumac -l 2 -- xterm
+        Могут пользоваться только пользователи с привелегией PARSEC_CAP_SUMAC
+    
+
+Просмотр информации о ядре Linux
+    uname -a
+    hostnamectl
+    dmesg | grep Linux
+    
+Обновление Ядра
+    apt update
+    apt dist-upgrade
+    
+Просмотр разделов
+    lsblk
+    df -h
+    fdisk -l
+    parted /dev/sda 'print'
+    
+    Запуск проверки диска (перед этим нужно отмонтировать или запускать при старте системы) 
+    fsck /dev/sdb
+    fsck -y /dev/sdb - с автоматическим исправлением
+    
+Восстановление GRUB
+        1. ls
+        2. ls (hd0,msdos1) - нужно по размеру определить
+        3. set root=(hd0,msdos1)
+        4. insmod normal
+        5. normal
+        6. linux /boot/vmlinuz-4.2.0-16-generic root=/dev/sda1 ro
+        7. boot
+    После запуска linux
+        update-grub
+        
+    Можно переустановить (но не пробовал)
+        1. 
+            sudo mount /dev/sda1 /mnt
+        2. 
+            sudo mount --bind /dev /mnt/dev &&
+            sudo mount --bind /dev/pts /mnt/dev/pts &&
+            sudo mount --bind /proc /mnt/proc &&
+            sudo mount --bind /sys /mnt/sys
+        3.
+            sudo grub-install -root-directory=/mnt/ /dev/sda
+        4.
+            sudo umount /mnt/sys &&
+            sudo umount /mnt/proc &&
+            sudo umount /mnt/dev/pts &&
+            sudo umount /mnt/dev &&
+            sudo umount /mnt
+
+Инструменты для мониторинга
+    iostat -xdt 2 1000
+    mpstat 2 1000
+    
+    Memory
+        vmstat -m
+        vmstat -a
+        
+    sar 4 5
+    
+    pmap
+
+Для отображения сокетов
+    netstat -anp | grep <...>   (-tulpan)
+    ss -pl  | grep <...>
+    
+    
+
+
+Проверка диска
+
+        В Linux-системах есть утилита fsck, она служит для проверки файловой системы. Операционная система периодически самостоятельно выполняет проверку. Но часто бывает так что проверить файловую систему требуется принудительно. Естественно, выполнить полноценную проверку на смонтированных разделах не получится.
+
+        В таком случае стоит использовать такой простой способ:
+
+        sudo touch /forcefsck
+
+        Эта команда создаст в корне диска файл с названием /forcefsck, который укажет системе, что при старте следует проверить файловую систему на дисках, указанных в /etc/fstab.
+
+        Выше описанное, касается системных разделов, которые нельзя отмонтировать для проверки. Если Вы хотите проверить диски, которые можно отмонтировать, то после из размонтирования можно сделать так:
+
+        fsck -y /dev/имя-диска
+
+        К этому можно добавить несколько ключей:
+
+        fsck -y -c -f /dev/имя-диска
+
+        ключ "-y" означает согласие на вопросы утилиты по-ходу работы.
+        ключ "-c" утилита ищет, и если находит, то перенесит bad-блоки в badblock-лист. (remap в victoria)
+        ключ "-f" форсирует выполнение проверки
+
+        Утилита GParted проверяет диск так:
+
+        e2fsck -f -y -v -C 0 /dev/имя-диска
+
+Включение расширенного логгирования apache2
+    sudo a2enmod dump_io
+    systemctl restart apache2
+    
+    vim /etc/apache2/sites-enabled/000-default.conf
+        DumpIOInput On
+        DumpIOOutput On
+        LogLevel dumpio:trace7
+    
+    systemctl restart apache2
+        В логах /var/log/apache2/error.log

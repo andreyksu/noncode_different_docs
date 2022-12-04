@@ -25,5 +25,55 @@ get off 		|выйти,выходить;слезть,слезать;сойти,с
 get On 			|ладить,уживаться;продолжить(continue),садиться, сесть
 get along		|ладить, уживаться
 Nice To Have	|хорошо бы иметь
+can go a long 	|может продолжаться
+Hope you are doing great	|Надеюсь, у вас все отлично
+even though		|даже не смотря на, даже, даже если, не смотря на то
+
+take part 	|принимать участие
+
+----------------------------
+His students would not have the patience to read through the eight hundred pages of Programming in Scala.
+If you prefer to manually configure your Maven project rather than clone one of our samples
 
 Hope you are doing great	|Надеюсь, у вас все отлично
+
+----------------------------
+
+There are exceptions though | Однако есть исключения
+A shared pointer does share ownership 	| общий указатель ДЕЙСТВИТЕЛЬНО делит/разделяет права
+
+flood	|наводнинеие, поток (малосодержательное нетематическое сообщение)
+
+abruptly	|резко(sharply), внезапно(suddenly) [əˈbrʌptlɪ]
+give up 	|сдаться, уступить; отказаться(refuse);бросить (quit)
+!eager		|нетерпеливый
+
+indeed		|Н.действительно,в самом деле;несомненно;даже,более того [ɪn'diːd]
+mere		|простой,чистый,обычный
+!chained	|прикованный, сцепленный
+!chain
+meaningful 	|значимый
+comes To 	|сводится к, приходить к
+rate		|С. ставка(bet), расценка(price), стоимость(cost); скорость(speed), частота(frequency);Г.оценивать(estimate)
+contrary 	|С.противоположность,противовес;П.противоположный(opposite),встречный(counter);Нар.наоборот;Прд.вопреки,наперекор (поместить в первый словарь)
+-indeed     |Н.действительно,в самом деле;несомненно;даже,более того [ɪn'diːd]
+indeed		|Н.действительно,в самом деле;несомненно;даже,более того [ɪn'diːd]
+fulfilling	|осуществляющий, выполняющий;отвечающий,удовлетовряющий;С.выполнение
+fulfil/filfill	|выполнять(perform),исполнять(carry out),осуществлять(implement);соответствовать(satisfy,meet);отрабатывать,отработать(complete, work out)
+meet	|встречать(encounter), удовлетворять(satisfy);соответствовать(mathc), знакомиться(acquaint)
+acquaint |introduce, familiarize
+Bootstrap	|Г.загружать(load);П.загрузочный(boot);С.загрузка
+pace		|С.скорость,темп
+bundled		|П.связанный(connected),поставляемый(supplied),сгруппированный(grouped);Г.связать(connect),поставлять(supply)
+impose		|навязать/навязывать, налагать, насаждать, установить/устанавливать, предъявлять
+
+rest assured | будьте уверены
+whereas	|С.в то время как(while), между тем как(while); Н. несмотря на(although);Пред.ввиду(since)
+while		|Союз.в то время как, пока; тогда как;Н.не смотря на то, покуда;Союз.хотя(although), причем(when)
+prepend		|Г.добавлять(add)
+suspicion	|подозрение
+distrust	|недоверие
+absorb		|поглащать, впитывать, усваивать
+
+prohibit	|запрещать, препятствовать
+oversight	|надзор, контроль; надзорный

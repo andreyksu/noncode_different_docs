@@ -1,0 +1,16 @@
+In Gatling, each virtual user in a scenario gets its own instance of the HttpRequestActionBuilder. This is achieved through a mechanism called "scenario cloning".
+
+When a Gatling simulation is executed, Gatling creates a single instance of the scenario, which contains all the steps and actions defined in the scenario. When a virtual user is started, Gatling creates a "clone" of the scenario for that user. This clone contains a copy of all the steps and actions defined in the scenario, but is independent of the original scenario instance.
+
+When a virtual user executes a scenario, it follows the steps and actions defined in its clone of the scenario. This includes creating a new instance of the HttpRequestActionBuilder for each HTTP request.
+
+The HttpRequestActionBuilder is designed to be immutable, meaning that it does not modify its state when its methods are called. Instead, each method call returns a new instance of the HttpRequestActionBuilder with the updated state. This allows Gatling to create a new instance of the HttpRequestActionBuilder for each virtual user without creating any thread-safety issues or contention between users.
+
+Overall, the combination of scenario cloning and immutable HttpRequestActionBuilder instances allows Gatling to support high levels of concurrency and ensure that each virtual user executes its scenario independently of other users.
+
+
+Yes, when Gatling creates a new copy of the scenario for each virtual user or thread, it also creates a new copy of the HttpRequestActionBuilder for each virtual user or thread. This means that each virtual user or thread will execute its own copy of the HttpRequestActionBuilder, which includes its own set of parameters, such as the URL, method, headers, and body.
+
+This is important because it allows each virtual user or thread to execute its own HTTP requests independently, without interfering with the requests of other virtual users or threads. It also ensures that each virtual user or thread can use its own set of parameters, such as user-specific authentication tokens or session IDs, which may be required to access the application.
+
+Additionally, Gatling provides a number of mechanisms to customize the behavior of the HttpRequestActionBuilder for each virtual user or thread, such as using session variables or feeder data to dynamically generate URLs or request parameters. This allows you to create highly dynamic and realistic performance tests that accurately simulate the behavior of real users accessing the application.

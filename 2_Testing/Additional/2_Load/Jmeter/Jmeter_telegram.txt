@@ -1,0 +1,74 @@
+https://t.me/qa_load/94833
+
+Для каждого Theread копирутся весь тест-план.
+
+Проблема в клонировании всего тест плана для каждого потока. Не клонируются те, которые implements NoTheadClone.
+Если у тебя 100 header manager'ов в тест плане и 10_000 потоков, то это одних только header manager'ов будет 1_000_000. А в каждом по 5 header'ов.
+
+Кстати, include controller тоже дублирует объекты. Сделали include 5 раз -- получайте в 5 раз больше потребление памяти.
+У нас не хватало Xmx60g как раз из-за того, что в каждом http sampler был свой header manager.
+
+
+Клонирование тест-плана между тредами в JMeter это фундаментальная фича. Благодаря этому возможен свободный параллелизм. 
+Без этого начнутся неожиданные спецэффекты, когда например кто-то через JSR223 выставляет заголовок и думает что делает только для своего треда. А окажется что сделал для всех. Так что удалять этот фундаментальный принцип не так просто. Плюс с его удалением придётся делать thread safety на общих объектах, а это приведёт к падению RPS.
+С другой стороны, этот принцип и правда обрекает на зверское дублирование по делу и без дела. Я не вижу, как такое можно провернуть без мажорного релиза и тотального пересмотра подхода к параллелизму.
+
+    - А не надо редактировать header manager'ы через jsr223.
+    
+    
+https://learnxinyminutes.com/docs/scala/
+
+
+https://t.me/qa_load/94896
+    можете заюзать опцию в tcpreplay, которая будет генерить уникальные ip каждую итерацию проигрывания pcap:
+       --unique-ip
+              Modify IP addresses each loop iteration to generate unique flows.  This option must appear in combination with the following options: loop.
+
+              Ensure IPv4 and IPv6 packets will be unique for each --loop iteration.  This is done in a way that will not alter packet CRC, and therefore will genrally not affect performance. This option will significantly increase the flows/sec over generated over mul-
+              tiple loop iterations.
+              
+              
+    в тирексе есть тоже field engine - можно менять поля пакетов
+    
+    
+
+https://t.me/qa_load/94911    
+а txrex'у нельзя поток pcap скормить? можно пожать дамп, и разжимать на лету. Тогда и диск и скорость на порядок меньше можно
+Но вообще у sip'a не сложные пакеты, можно и на ходу генерить, но сходу правильно и корректно будет сложно конечно
+там же не просто пакеты, там весь этот call flow, плюс голосовой трафик плюс еще какая-то куча всего
+    
+    хз насколько они интересные, но в тирексе уже есть для astf режима готовые sip пикапы:
+~/v3.00$ find ./ -name *sip*.pcap
+./avl/delay_10_sip_0.pcap
+./avl/delay_sip_0.pcap
+./avl/sip_0.pcap
+./avl/delay_10_sip_video_call_short.pcap
+./avl/delay_10_sip_video_call_full.pcap
+./automation/regression/functional_tests/golden/sim_astf-udp_sip.pcap
+
+
+
+https://t.me/qa_load/94928
+
+----------------------------------------
+Предлогаемые основые репорторы:
+	ReportsTimesDistribution
+	ResponseTimesviaThreads
+	ResponseLateniesOverTime
+	GraphResult
+	
+Timers
+	LoopController
+	WhileController
+	SwitchController
+	RandomController
+	RandomController
+
+
+1. Есть момент, что нужно для каждого сампла задавать свой Хидер + важно что для каждого сампла вызывается скрипт, данный скрипт нужно прятать в одни из самплов(по опыту работы над проектом СМЭВ)
+2. Аналогичная ситуация в треде и со скриптами, когда он вне сампла, он вызывается каждый раз(для каждого сампла в тердгруппе) когда спрятал в самплер, стало норм - по проекту СМЭВ
+3. По поводу CSV можно сдеать по разному, для одногй тредгруппы, для нескольких тредгрупп итд, читать от начала до конца или же нет.
+
+----------------------------------------
+Precise Throughtput Timer 
+Косячит Constant Throughput Timer.  А Preicse точно работает

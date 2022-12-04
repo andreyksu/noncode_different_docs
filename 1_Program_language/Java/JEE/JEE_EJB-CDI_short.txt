@@ -1,0 +1,177 @@
+CDI
+
+	Weld 5.0.1.Final - CDI Reference Implementation (https://docs.jboss.org/weld/reference/5.0.1.Final/en-US/html_single/)
+
+	Beans
+		Раньше (JEE-6) под бинами понимали/подразмумевали - управляемые бины. Бины, что управлялись контейнером (по сути POJO объекты с минимальными ограничениями).
+			Они поддерживали:
+				- инъекцию/внедрение ресурсов;
+				- управление жизненным циклом (обратные вызовы @PostConstruct and @PreDestroy - это как я понял для управляемых бинов);
+				- перехватчики;
+
+		CDI переопределил понятие bean. Теперь бином вляется - любой конкретный(не абстрактный) класс с конструктором по умолчанию (или конструктором с @Injected).
+			- Под это определение попадает каждый JavaBean(Java SE) в том числе и EJB (Session beans).
+				- Т.е. под бином стали понимать JavaSE классы. А не только управляемые контейнером.
+
+		CDI - Контейнер
+			- создает и удаляет инстанс бина;
+			- ассоциирует его с контекстом;
+			- инъектирует бин в другие бины;
+			- уточняет их с помощь аннотаций (квалификаторы);
+			- добавляя перехватчики и дектораторы.
+
+				- A bean is usually an application class that contains business logic.
+				- A bean may access transactional resources.
+				- Dependencies between beans are managed automatically by the container.
+				- Most beans are stateful and contextual.
+				- The lifecycle of a bean is managed by the container.
+
+		Let’s explore the various kinds of beans that CDI implementations must support out-of-the-box.
+			- Managed beabs
+				Can explicitly declare a managed bean by annotating the bean class @ManagedBean, but in CDI you don’t need to. According to the specification, the CDI container treats any class that satisfies the following conditions as a managed bean:
+					- It is not a non-static inner class.
+					- It is a concrete class, or is annotated @Decorator.
+					- It is not annotated with an EJB component-defining annotation or declared as an EJB bean class in ejb-jar.xml.
+					- It does not implement jakarta.enterprise.inject.spi.Extension.
+					- It has an appropriate constructor—either:
+						- the class has a constructor with no parameters, or
+						- the class declares a constructor annotated @Injec
+					- Managed beans support the @PostConstruct and @PreDestroy lifecycle callbacks.
+			- Session beans
+				Session beans are also, technically, managed beans. However, since they have their own special lifecycle and take advantage of additional enterprise services, the CDI specification considers them to be a different kind of bean.
+					- They have a special lifecycle, state management and concurrency model that is different to other managed beans and non-managed Java objects. !!!But session beans participate in CDI just like any other bean.!!!
+					- There’s no reason to explicitly declare the scope of a stateless session bean or singleton session bean. The EJB container controls the lifecycle of these beans, according to the semantics of the @Stateless or @Singleton declaration. On the other hand, a stateful session bean may have any scope.
+						- Whenever we need the advanced enterprise services offered by EJB, such as:
+							- method-level transaction management and security,
+							- concurrency management,
+							- instance-level passivation for stateful session beans and instance-pooling for stateless session beans,
+							- remote or web service invocation, or
+							- timers and asynchronous methods,
+							- Many beans (including any @SessionScoped or @ApplicationScoped beans) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.2 is especially useful. Most session and application scoped beans should be EJBs.
+							- Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the advanced container-managed lifecycle defined by the EJB stateless/stateful/singleton model, with its support for passivation and instance pooling.
+							- Finally, it’s usually obvious when method-level transaction management, method-level security, timers, remote methods or asynchronous methods are needed.
+
+
+		The scope of a bean defines the lifecycle and visibility of its instances. 
+		CDI бины являются постоянными в рамках контекста (контекст в свою очередь формируетя запросом или сессией. По сути контекст ассоциируется с областью видимости)
+			Т.е. когда создается контекст, создается для него набот/цепочка инстнасов бинов и их зависимостей. Они живут пока есть контекст (видят друг друга в рамка этого контекста). При разрушении контекста удаляются/разрушаются и инстансы бинов.
+				При этом нет возможности в ручном режиме удалить бин из контекста.
+			Эти контексты определяются областью видимости бина:
+				@ApplicationScoped		- компонент создается лишь один раз и действует на протяжении работы приложения.
+											Доступен всем, но нужно помнить, что доступ к нему будет многопоточный и он должен это обрабатывать.
+				@SessionScoped			- действует на протяжении одного пользовательского сеанса (нескольких HTTP запросов)
+											Другими словами, время жизни данного компонента, равен времени длительности HTTP-сеанса и сбрасывается, когда сеанс заканчивается.
+				@RequestScoped			- соответствует единстенному запросу hppt или вызову метода метода (компонент создается на все время вызова метода и сбрасывается по его окончанию).
+				@ConverationScoped		- действительна между множественными вызовами - в рамкаходной сессии
+				@Dependet 				- жизненный цикл, совпадает с жизненным циклом клиента(под клиентом подразумевается др. бин). Зависимый компонент создается каждый раз при внедерении, а ссылка удалеятеся одндовременно с удалением точки внедрения. Эта область видимости по умолчанию предназначена для CDI.
+										- If a scope is not explicitly specified, then the bean belongs to a special scope called the dependent pseudo-scope. Beans with this scope live to serve the object into which they were injected, which means their lifecycle is bound to the lifecycle of that object.
+
+		Clients (for example, other beans) executing in the same context will see the same instance of the bean. But clients in a different context may see a different instance (depending on the relationship between the contexts).
+			Бины не похожи на Stateless - так как они являются постоянными объектами в рамках контекста и клиент их видет в разном стоянии. У stateless - вообще нет состояния и клиенту возвращается каждый раз новый инстанс бина (условно так).
+			Бины не похоже на StateFull - так как они не могут управляться клиентом в отличии от StateFull. Здесь они схожи с StateLess, где полностью управление отдается контейнеру а тот регламентирует свою работу на базе контекста. 
+				При этом контекст может быть уникальным для потока (request scoped), или шариться между потоками (session scoped, application scoped)
+
+	Представляемые сервисы CDI:
+
+		CDI layers an enhanced lifecycle and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. The CDI services provide:
+		(CDI наслаивает улучшенный жизенный цикл и модель взаимодействия ...)
+			- an improved lifecycle for stateful objects, bound to well-defined contexts,
+			- a typesafe approach to dependency injection,
+			- object interaction via an event notification facility,
+			- a better approach to binding interceptors to objects, along with a new kind of interceptor, called a decorator, that is more appropriate for use in solving business problems, and
+			- an SPI for developing portable extensions to the container.
+
+		CDI объявлен и может применяться не только в рамках JEE или какого-то др. контейнера, CDI может быть применен и в Java SE (через Weld).
+			- В рамках CDI предусмотерна работа с компонентами Java EE (в том числе и с EJB - но о EJB обычно говорят отдельно, так как у них свой жизненный цикл и транзацкционность).
+				-- CDI includes built-in support for several different kinds of bean, including the following Java EE component types:
+					--- managed beans, and
+					--- EJB session beans.
+
+		В копилку слабой связанности, что представляет CDI
+			Events, interceptors and decorators enhance the loose-coupling inherent in this model:
+				- event notifications decouple event producers from event consumers,
+				- interceptors decouple technical concerns from business logic, and
+				- decorators allow business concerns to be compartmentalized.
+
+		@Model = @Named @RequestScoped
+
+	Contexts and Dependency Injection (CDI) integration with EJB container	(https://www.ibm.com/docs/en/was-nd/8.5.5?topic=cdi-contexts-dependency-injection-integration-ejb-container)
+	The following session bean instances are obtained using dependency injection:
+    	- Contextual
+    	- Bound to a life cycle context
+    	- Available to other instances that launch in that context
+    	- Container creates an instance when needed
+    	- Container destroys an instance when context ends
+
+
+EJB
+	@Local
+		Вызов с такой аннотацией может быть выполнен только когда работа ведется в рамка одной JVM (одной виртуальной машины).
+	@Remote
+		Вызов с такой аннотацией может быть выполнен и из др. вирт. машины (допустим по RMI)
+	@LocalBean
+		Бин без интерфейсов. Локальный бин, вызывается тоже при работе на одной виртуальной мишине.
+
+	@Stateless - означат без сохранения состояния. Это означает, что задача должна быть выполнена одним вызовом метода.
+		Как и CDI является постоянным в рамках контекста (области видимосит), так и сессионный компонент без сохранения состояния клеиента, является постоянным в рамках порожденной транзакции. Т.е. постоянный в рамках транзакции.
+
+	Жизненный цикл:
+		- Stateless и Singleton aналогично имеется два метода @PostConstruct и @PostDestroy
+			-- Singleton так же имеет доп. аннотации - но они больше связаны с временем инициализации (@Startup или @DependsOn)
+		- Statefull дополнительно к этим аннотациям еще имеет две аннотации связанные с пассивизацией и @Remove
+
+	Для StateLess и Singleton:		
+		1. Жизненный цикл начинается когда клиент запрашивает ссылку на компонент. Компонент создает новый экземпляр сеансового компонента.
+		2. Если инстанцируемый компонент имеет внедряемые зависимости (@inject, @Resource, @EJB, @PersistanceContect) - то контейнер внедряет все необходимые зависимости.
+		3. Если экземпляр имеет метод с аннотацией @PostConstruct - то контейнер вызывает его.
+		4. Если контейнер больше не нужен, то контейнер вызывает метод @PreDestroy - на котором заканчивается время жизни компонента.
+			- Stateless и Singleton имеют одинаковый жизненный цикл с небольшим различием (в том как они создаются и уничтожаются). 
+				- Stateless компонент при первом вызове создается несколько экземпляров и тем самым обеспечивая Pull компонентов. После использования компонент кладется обратно в хранилище до следующего использования. 
+				- Singleton - создается в зависимотси от используемой аннотации (@Startup или @DependsOn)
+	Для	Statefull:
+		1. стр 328
+
+
+	Таймеры:
+		- Контейнер ведет учет всех таймеров и вызывает соответствюущий метод экземпляра компонента, кода таймер отработал.
+		- Во-первых, EJB необходимо создать таймер (автоматически или программно) и зарегистрироваться для использования метода обратного вызова, затем служба таймер вызывает зарегистированный метод экземпляра EJB.
+			-- Если метод помечен аннотацией @Sheduled - то таймер будет создан автоматически и данный метод будет вызываться каждый раз.
+			-- Если создается программным путем, то класс должен предоставить метод с аннотацией @Timeout - который будет вызван контейнером
+				--- Вероятно создание таймера и регистрация должна происходить в методе с аннотацией @PostConstruct
+
+Транзакционность:
+	Далее в контексте СУБД
+
+		Транзакция - это активность.
+			Характеризуется началом, конецом, а так же результат(commit).
+
+
+		Используется только в рамках конкурентной среды (изоляция доступа к данным).
+
+		Допустим, для проведения анализа или отчета, вероятно транзацкция не нужна (она может лишь тратить время).
+		Транзакция накладывает сложность при репликации (распределенная среда).
+
+		ACID
+			Атомарность;
+				В контексте - либо все, либо ничего. Если одна упала, то отменяем все операции. Т.е. не можем сохранить частично - ибо нужно будет определять что записалось и как это удалять.
+
+					Есть пожелание - закрывать транзакции за собой и как можно быстрее.
+						Может быть так, что транзакция пишется долго и не закрывается, при этом может произойти переполнение журналирования (так как не отработает сборщик мусора пока не закроется транзакция) - характерно для MySQL(используется WAL). Oracle - это обходит .
+						Posgres - тоже обходит, и обходит проблему Oracle - когда меняется одно единственное поле у 1 00 000 записей - для этого требуется очень много памяти.
+
+			Согласованность;
+			Изолированность;
+					Сериализация (в контексте) - одновременно выполняющиеся транзакции, имеют такой же результат, как если бы они выполнялись последовательно.
+			Долговечность;
+	
+
+XML
+	Metro - реализация JAXB
+		JAXB - по сути API и набор Аннотаций - для предоставления XML-документов как акртефактов Java.
+			Обрабатывает демаршалинг документов XML в объекты и наоборот.
+
+	JAXP - это API поверх SAX, DOM, XSTL
+
+
+Undertow
+	Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO.
