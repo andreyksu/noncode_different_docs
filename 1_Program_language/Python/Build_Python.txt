@@ -14,7 +14,7 @@
 				Помогло указание в файле vim /usr/bin/lsb_release правильного интерпретатора. В моем случае 3.5 (т.е.  #!/usr/bin/python3.5 -Es)
 		
 3. Установка пакетов через pip
-	python3.9 -m pip install --proxy=http://a.nikonenkov:p\@ssword@proxy05.icl.kazan.ru:3128 pytest
+	python3.9 -m pip install --proxy=http://ligin:p\@ssword@proxy:3128 pytest
 	
 		При  этом все спец-символы должны быть экранированы.
 			Пример: @ → \@ или $ → \$

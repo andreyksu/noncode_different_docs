@@ -102,3 +102,46 @@ A full outer join B
 Полные внешние соединения коммутативны. Кроме того, "A left outer join B " и "B right outer join A" является эквивалентным.
 
 [В начало]
+
+----------------------------------------------------
+drop table if exists mytemp;
+CREATE TEMPORARY TABLE IF NOT EXISTS mytemp(vp_id int, org_list text);
+DO $do$
+DECLARE
+	i RECORD;
+	ii text := '';
+	xx RECORD;
+BEGIN
+	FOR i IN (SELECT DISTINCT org_id from public.user) LOOP		
+		ii := '';
+		FOR xx IN (SELECT id from public.user where org_id = i.org_id) LOOP
+			ii = ii || xx.id || '   '; --канкатенация строк.
+			--RAISE NOTICE '%', i.org_id;
+			END LOOP;
+			insert into mytemp values (i.org_id, ii);
+		END LOOP;
+		--SELECT ii AS STRING;
+END $do$;
+select * from mytemp order by vp_id;
+
+-------------
+DO $$ 
+	DECLARE 
+	roll_number INT;
+	std_name TEXT; 
+BEGIN
+	roll_number := 5;
+	std_name := 'Joseph';
+	RAISE NOTICE 'Student Roll No: %, Student Name is %', 
+	roll_number, 
+	std_name;
+END $$;
+
+- Initially, the “DO” keyword is used to execute the code block.
+- Two variables “roll_number” and “std_name” are declared within the “DECLARE” block.
+- The “BEGIN” keyword starts the transaction block.
+- The declared variables are initialized with some values in the “BEGIN” block.
+- The “RAISE NOTICE” statement is used to print the variables.
+- The variables to be printed are specified within the “RAISE NOTICE” and “END” statements.
+- The “%” placeholders are used to print the values of the given variables.
+- The “END” statement halts the transaction block.

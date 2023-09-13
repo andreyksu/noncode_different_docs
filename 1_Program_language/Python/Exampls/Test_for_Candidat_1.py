@@ -4,14 +4,14 @@ a = [1, 2, 3]
 
 def func1():
 	a = [5, 6]
-	print "func1 a =====", a
+	print ("func1 a =====", a)
 	def inner_func1():
 		a[1:1] = [7, 8]
-		print "inner_func1 a =====", a
+		print ("inner_func1 a =====", a)
 	inner_func1()
 
 func1()
-print "a", "=====", a
+print ("a", "=====", a)
 
 #--------------------------------------------------------
 #Что выведет:
@@ -19,7 +19,7 @@ i = [1, 2, 3]
 def func2(arg = i):
 	length = len(arg)
 	arg[length:] = [4, 5]
-	print "arg =====", arg
+	print ("arg =====", arg)
 
 func2()
 i = [100, 200, 300]
@@ -29,10 +29,10 @@ func2()
 #--------------------------------------------------------
 #Как вызвать innerFunc() - возможные способы?
 def func3(param):
-	print "param =====", param
+	print ("param ===== ", param)
 	a = 333
 	def innerFunc():
-		print "innerFunc() =====", a
+		print ("innerFunc() ===== ", a)
 	a = 555
     
 #--------------------------------------------------------

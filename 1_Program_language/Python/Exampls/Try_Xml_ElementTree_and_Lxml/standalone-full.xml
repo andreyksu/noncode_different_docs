@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<server xmlns="urn:jboss:domain:8.0">
+    <profile>
+        <subsystem xmlns="urn:jboss:domain:datasources:5.0">
+            <datasources>
+                <xa-datasource jndi-name="java:/VteDS" pool-name="VteDS">
+                    <xa-datasource-property name="ServerName">
+                        dbserver
+                    </xa-datasource-property>
+                    <xa-datasource-property name="PortNumber">
+                        5432
+                    </xa-datasource-property>
+                    <xa-datasource-property name="DatabaseName">
+                        dogmat
+                    </xa-datasource-property>
+                    <driver>postgresql-jdbc4</driver>
+                    <xa-pool>
+                        <min-pool-size>5</min-pool-size>
+                        <max-pool-size>20</max-pool-size>
+                    </xa-pool>
+                    <security>
+                        <user-name>app_s</user-name>
+                        <password>app_s</password>
+                    </security>
+                    <recovery>
+                        <recover-credential>
+                            <user-name>app_s</user-name>
+                            <password>app_s</password>
+                        </recover-credential>
+                    </recovery>
+                </xa-datasource>
+            </datasources>
+        </subsystem>
+    </profile>
+</server>

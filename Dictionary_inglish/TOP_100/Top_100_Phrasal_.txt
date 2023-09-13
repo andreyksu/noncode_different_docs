@@ -86,7 +86,8 @@ take back;взять обратно
 take off;взлететь
 take on;приобретать
 take out;вынимать
-take over;перенимать
+take over;перенимать,вступать во владение
+hand over;сдавать, передать другому
 turn into;превращаться
 turn off;выключить
 turn on;включaть

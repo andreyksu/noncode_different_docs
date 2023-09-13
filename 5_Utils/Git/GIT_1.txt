@@ -1,0 +1,60 @@
+1. git revert HEAD - создаст новый коммит, противоположный сделанному.
+
+2. git reset --hard HEAD~ - отменит последний коммит, и с --hard удалит все изменения как с локального каталога так и сам коммит.
+    
+        --mixed - удалит коммит, но при этом в дирректории останутся изменения, при этом не индексированны.
+        
+3. Отмена индекса, работает аналогично отмене коммита.
+
+4. Отмена неиндексированных изменений, выполняется через chekout
+
+5. git checkout -b <br-name> = git branch <br-name> + git checkout <br_name>
+
+6. Удаление ветки:
+    git branch -d <br-name>
+
+6. Слияние веток:
+    Из master → <br-name>
+    
+    git checkout <br_name>
+    git merge master
+    
+    Если конфликтов не возникло, то автоматом выполнится commit.
+    
+        Если возникли проблемы то коммит придется делать самим, после решения конфликта:
+            6.1. Решаем конфликты
+            6.2. git add .
+            6.3. git commit
+            
+    Слияние в master
+        git checkout master
+        git merge <br_name>
+            
+7. Rebase
+    Перенос из master в <br_name>
+    
+    git checkout <br_name>
+    git rebase master
+    
+        #git rebase --onto master server client #В этой команде говорится: «Переключись на ветку client, найди изменения относительно ветки server и примени их для ветки master». Это если client отпачкован от server, a server от master.
+        # После этого fast-forward
+        git checkout master        
+        git merge client
+        
+        #git rebase <basebranch> <topicbranch> #Представим, что вы решили добавить наработки и из ветки server. Вы можете выполнить перебазирование ветки server относительно ветки master без предварительного переключения на неё при помощи команды git rebase <basebranch> <topicbranch>, которая извлечёт тематическую ветку (в данном случае server) и применит изменения в ней к базовой ветке (master):
+            git rebase master server
+        #Снова перемотка:
+        git checkout master
+        git merge server
+        
+8. Слияние коммитов.
+    git rebase -i HEAD~3 #Изменяем три последних коммита. Вернее берем родителя третьего коммита и натягиваем на него изменения.
+    
+    # Из 3х коммитов сделаем один.
+        #pick f7f3f6d Change my name a bit
+        #squash 310154e Update README formatting and add blame
+        #squash a5f4a0d Add cat-file
+        
+    # Удаление коммита.
+        pick 461cb2a This commit is OK
+        drop 5aecc10 This commit is broken

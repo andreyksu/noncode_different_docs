@@ -1,0 +1,66 @@
+class WildAnimal {
+}
+
+class Woolf extends WildAnimal {
+}
+
+class GrayWoolf extends Woolf {
+}
+
+class Bear extends WildAnimal {
+}
+
+class Sparivatel<T extends WildAnimal> {
+	private T t;
+
+	public Sparivatel(T t) {
+		this.t = t;
+	}
+
+	protected void doSomething(T aT) {
+	}
+
+	public void work_1(Sparivatel<T> spar) {
+		doSomething(t);
+		doSomething(spar.getT());
+
+		spar.doSomething(spar.getT());// +++ Здесь понятно, тип точный и во время исполенния все нормально кастится.
+		spar.doSomething(t);// ++++ Здесь понятно, тип точный и во время исполенния все нормально кастится.
+	}
+
+	public void work_2(Sparivatel<? extends T> spar) {
+		doSomething(t);
+		doSomething(spar.getT());
+		
+		//spar.doSomething(spar.getT());// --- Бессмыслица, но тоже нельзя. Т.е. самого себя не принимает. Т.к. не известно что туда положила.
+		//spar.doSomething(t);// --- Здесь нельзя, но по какой причине, то что это подтип по отношенитю к Т или то чно это не известный тип. Скорее причина в том, что мы не знаем что приняли.
+	}
+
+	public <V extends T> void work_3(Sparivatel<V> spar) {
+		doSomething(t);
+		doSomething(spar.getT());
+
+		spar.doSomething(spar.getT());// +++ Бессмыслица, но можно. Так можно, по той причине, что это известный тип и сам себя он может принять.
+		//spar.doSomething(t); // --- Логично что так нельзя, т.к. здесь дочерний тип V по отношению к T
+	}
+
+	public T getT() {
+		return t;
+	}
+}
+
+public class Test_1 {
+	public static void main(String[] args) {
+		Sparivatel<Woolf> sW1 = new Sparivatel<>(new Woolf());
+		Sparivatel<Woolf> sW2 = new Sparivatel<>(new Woolf());
+		Sparivatel<Woolf> gW1 = new Sparivatel<>(new GrayWoolf());
+		Sparivatel<Bear> sB1 = new Sparivatel<>(new Bear());
+		Sparivatel<Bear> sB2 = new Sparivatel<>(new Bear());
+
+		sW1.work_1(sW2);
+		sW1.work_2(gW1);
+		sW1.work_3(gW1);
+
+	}
+
+}
