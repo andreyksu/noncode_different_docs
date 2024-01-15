@@ -62,6 +62,7 @@ night;ночь
 number;номер
 often;часто
 old;старый
+ancient;древний
 only;только
 open;открывать
 paper;бумага
