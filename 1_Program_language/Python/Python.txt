@@ -48,6 +48,9 @@ Python:
             - Поиск переменных производится:
                 -- В локальной таблице имен, затем в глобальной, в последнюю очередь в таблиц встроенных имен.
 
+    Есть правило "LEGB", можно почитать у того же Лутца. Области видимости разделены на уровне функций, модулей. На уровне операторов области видимости не выделяются.
+    Scope is delineated by function and class blocks. Both functions and their scopes can be nested.
+
     Инструкции выполняемые на верхнем уровне, т.е. читаемые из файла или интерактивно, рассматриваются как часть модуля __main__, имеющего собственное глобальное пространство имен.
         Встроенные имена также находятся в модуле __builtin__
 
@@ -192,7 +195,7 @@ Python:
         Класс = объект класс
         Экземпляр = Объект экземпляр
 
-    - Оператор class создаёт объект класса и присваивает его имени. Точно так же каки def. Выполняется при первом импортировании файлов/модуля, где они находятся (но не ранее).
+    - Оператор class создаёт объект класса и присваивает его имени. Точно так же как и def. Выполняется при первом импортировании файлов/модуля, где они находятся (но не ранее).
     - Каждый оператор class генерирует новый класс-объект (создается экземпляр от type или его наследников)
         -- Когда выполняется оператор class - Python запускает все операторы в теле класса от начала до конца.
             --- И присвание имён на этом этапе создаёт пространство имён класса (атрибуты-данных и атрибуты-методы)
@@ -1569,6 +1572,10 @@ if filename and os.path.isfile(filename):
         #[x ** 2 for x in range(10)]
         #[x ** 2 if x % 2 == 0 else x ** 3 for x in range(10)]
 
+        Возьми число и положи его в конец списка (list).
+
+        Вложенные циклы (списочные выражения)
+
 
         some_list = [1, 10, 100, 1000, 10000]
         matrix = [[print(x * y) for x in some_list] #Здесь для каждого y - Будет выполнен полный перебор x - т.е. для каждого значения второго цикла, все значения первого цикла.
@@ -1576,6 +1583,18 @@ if filename and os.path.isfile(filename):
 
         matrix1 = [print(x * y) for x in some_list #Здесь для каждого значения первого цилка, все значения второго цикла.
                     for y in range(1, 3)]           # Наверное, можнжо провести параллель с if в конце, но попадаем в еще один цикл, по этому выполняем весь перечень второго цикла.
+
+
+        Аналогично для словаря:
+            countries = {country: capital for country, capital in [("Россия", "Москва"), ("Беларусь", "Минск"), ("Сербия", "Белград")]}
+
+
+            In general,
+
+                [f(x) if condition else g(x) for x in sequence]
+                And, for list comprehensions with if conditions only,
+
+                [f(x) for x in sequence if condition]
 ------------------------
 tables = [lambda x = x: x*10 for x in range(1, 11)]
 ------------------------
@@ -1700,3 +1719,37 @@ print(type(y) == str)  # вернет True
             await my_coroutine()
          
         asyncio.run(main())
+
+
+-------------------------------------------
+numbers = [1, 2, 3]
+print(f"{numbers}, id = {id(numbers)}")
+numbers += [4]
+print(f"{numbers}, id = {id(numbers)}")
+
+Вывод программы:
+    [1, 2, 3], id = 2095932585856
+    [1, 2, 3, 4], id = 2095932585856
+
+Обратите внимание: операция присваивания (=) всегда создаёт новую переменную с новым идентификатором, даже для изменяемых типов данных:
+    numbers = [1, 2, 3]
+    print(f"{numbers}, id = {id(numbers)}")
+    numbers = numbers + [4]
+    print(f"{numbers}, id = {id(numbers)}")
+
+    Вывод программы:
+        [1, 2, 3], id = 1438332303232
+        [1, 2, 3, 4], id = 1438341470336
+
+
+----------------------------------
+class set([iterable])
+class frozenset([iterable])
+Return a new set or frozenset object whose elements are taken from iterable. The elements of a set must be hashable. To represent sets of sets, the inner sets must be frozenset objects. If iterable is not specified, a new empty set is returned.
+
+hashable
+An object is hashable if it has a hash value which never changes during its lifetime (it needs a __hash__() method), and can be compared to other objects (it needs an __eq__() method). Hashable objects which compare equal must have the same hash value.
+
+Hashability makes an object usable as a dictionary key and a set member, because these data structures use the hash value internally.
+
+Most of Python’s immutable built-in objects are hashable; mutable containers (such as lists or dictionaries) are not; immutable containers (such as tuples and frozensets) are only hashable if their elements are hashable. Objects which are instances of user-defined classes are hashable by default. They all compare unequal (except with themselves), and their hash value is derived from their id().

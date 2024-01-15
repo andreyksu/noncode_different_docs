@@ -87,8 +87,8 @@ Astra_1.6 Подключение по удалёнке
    https://wiki.astralinux.ru/pages/viewpage.action?pageId=57443684
     
     -------------------------------
-    usercaps off0327 просмотр привелегий.
-    usermac off0327
+    usercaps off0327        - просмотр привелегий (parsec)
+    usermac off0327         - 
     pdpl-user off0327
     fly-admin-smc &
     -------------------------------
@@ -210,3 +210,18 @@ Astra_1.6 Подключение по удалёнке
     
     systemctl restart apache2
         В логах /var/log/apache2/error.log
+
+Ошибка вида:
+    apt update
+        """
+        Writing more data than expected (35313 > 7809)
+        Hashes of expected file:
+        """
+
+    Решается строкой:
+        sudo apt -o Acquire::https::No-Cache=True -o Acquire::http::No-Cache=True update
+
+    Или можно почистить кэши
+        sudo rm /var/lib/apt/lists/*_*
+
+    А вообще была проблема из за Прокси. Убрал прокси - ошибка исчезла.

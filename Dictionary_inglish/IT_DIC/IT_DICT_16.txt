@@ -71,9 +71,31 @@ rest assured | будьте уверены
 whereas	|С.в то время как(while), между тем как(while); Н. несмотря на(although);Пред.ввиду(since)
 while		|Союз.в то время как, пока; тогда как;Н.не смотря на то, покуда;Союз.хотя(although), причем(when)
 prepend		|Г.добавлять(add)
+	prepend			|добавлять, добавить
 suspicion	|подозрение
 distrust	|недоверие
 absorb		|поглащать, впитывать, усваивать
 
-prohibit	|запрещать, препятствовать
+prohibit	|Г.запрещать, препятствовать(dissuade);препятствовать, мешать(prevent,not promote)
 oversight	|надзор, контроль; надзорный
+discourage	|Г.отговаривать,разубеждать
+
+
+-------------------------------
+Мне нужно только сопроводить человека.
+I'm just here to give the man a ride.
+
+let me guide you | позвольте мне проводить вас.
+come with me | сопровождать меня
+escort	| cопровождать 
+
+Let me guide you on how to solve this kind of problem.
+Позвольте мне показать вам, как решить такого рода проблемы.
+
+take over 	|перенимать, перенять(adopt); захватить (capture)
+come out	|выходить, появляться;вылезать(get out); получиться(trun out)
+
+instructions were quite clear	|инструкции были довольно ясными
+
+I'm not really into 	|на самом деле мне это не нравится
+I'm not really into 	|я не очень разбираюсь
