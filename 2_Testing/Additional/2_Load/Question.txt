@@ -1,0 +1,56 @@
+Question
+
+Кто-нибудь делает интеграцию тестов производительности с Allure TestOps?
+
+Jaeger
+
+https://t.me/qa_load/96294/96710 -- ссылки на все чаты.
+
+анализ трафика в Fiddler, Charles, ProxyMan.io
+
+
+МокСервер.
+    https://wiremock.org/docs/response-templating/
+    
+Сообщество нагрузочников
+    https://t.me/loadland
+
+Introducing Grafana Faro, an open source project for frontend application observability
+    https://grafana.com/blog/2022/11/02/introducing-grafana-faro-oss-application-observability/
+    
+    Решения на базе sitespeed.io, playwright.dev, selenium.dev, web.dev/measure, webpagetest.org, chrome.google.com/webstore/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk более простые для старта — система не знает, 
+
+
+Флагманы    
+    jmeter\gatling\k6 - основная тройка вроде как на данный момент, выбирайте по вкусу яп, подходу (ui vs code). Модель нагрузки - какая у вас в проде такую и берите     
+
+JMeter DSL
+    https://abstracta.github.io/jmeter-java-dsl/
+    https://abstracta.github.io/jmeter-java-dsl/guide/
+        https://qainsights.com/getting-started-with-jmeter-dsl/ можно попробовать
+        
+Средство для тестирования Мобилок
+    https://github.com/KasperskyLab/Kaspresso
+    
+Хэй гайз! А кто чем пользуется для тестирования производительности UI (сайтов/веб сервисов) ? Есть ли такие инструменты для линукс систем без графической оболочки (чтобы запускать из терминала) ?
+    sitespeed.io можно запускать через docker/docker-compose из консоли для конкретного сайта или для js-файла (Selenium + API)
+    
+     А не знаешь реально ли замерить не только прогрузку стартовой страницы, а еще и переходы по странице между виджетами и т.п?
+        переходы можно замерить тоже нужный ключ --multi
+        
+            https://t.me/qa_load/97150/98215
+            вот тут раскрыто, как тестируется несколько страниц в одной сессии
+            для кликов по ссылкам надо будет использовать selenium
+            
+Jmeter pacing
+    https://www.youtube.com/watch?v=3Tii2T8lm1s
+    https://loadtestweb.info/2017/08/23/pacing/
+    
+     Длительность выполнения сценария = шаг = pacing
+     
+
+Что-то от Тинькоф
+    https://youtu.be/xxv83JfyuAg
+    
+    
+https://t.me/qa_load/96294/98753 последнее сообщение, что прочитал.

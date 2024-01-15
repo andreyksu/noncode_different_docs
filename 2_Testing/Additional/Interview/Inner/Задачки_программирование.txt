@@ -1,0 +1,47 @@
+1.(!true || false && (!false || true && false))
+print(not True or not False and not (False or True and not False))
+
+
+
+
+
+
+
+
+
+
+2. Есть два int - нужно не использую 3й переменной поменять местами.
+
+
+
+
+
+
+
+
+
+
+3. Нужно перевернуть byte
+?
+
+4. Нужно найти сумму цифр N-значного числа (пусть будет int).
+    
+    
+    
+    
+ 
+
+
+
+   
+    
+    
+5. Рекурсия:
+    public static int f(int x) {
+        if (x>2){
+            return f(x-1)+f(x-2);
+        }
+        else{
+            return x;
+        }
+    }

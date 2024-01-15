@@ -35,18 +35,18 @@ a[:1] = a
 
 -------------------------
 class A:
-	a = "String_1"
+    aa = "String_1"
 
-	def a(self):
-		print("a() A.a = ", A.a)
-		print("a() self.a = ", self.a)
+    def a(self):
+        print("a() A.a = ", A.aa)
+        print("a() self.a = ", self.aa)
 
-	def b(self, a):
-		self.a = a
+    def b(self, a):
+        self.aa = a
 
-	def c(self):
-		print("c() self.a = ", self.a)
-		print("c A.a = ", A.a)
+    def c(self):
+        print("c() self.a = ", self.aa)
+        print("c A.a = ", A.aa)
 
 inst = A()
 inst.a()

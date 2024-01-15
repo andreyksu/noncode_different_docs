@@ -1,0 +1,116 @@
+====================================================
+How to Clear Local Storage using Selenium WebDriver?
+====================================================
+
+	import org.openqa.selenium.JavascriptExecutor;
+	import org.openqa.selenium.WebDriver;
+
+	public class LocalStorageJS {
+
+	    private JavascriptExecutor js;
+
+	    public LocalStorageJS(WebDriver webDriver) {
+	        this.js = (JavascriptExecutor) webDriver;
+	    }
+
+	    public void removeItemFromLocalStorage(String item) {
+	        js.executeScript(String.format("window.localStorage.removeItem('%s');", item));
+	    }
+
+	    public boolean isItemPresentInLocalStorage(String item) {
+	        return !(js.executeScript(String.format("return window.localStorage.getItem('%s');", item)) == null);
+	    }
+
+	    public String getItemFromLocalStorage(String key) {
+	        return (String) js.executeScript(String.format("return window.localStorage.getItem('%s');", key));
+	    }
+
+	    public String getKeyFromLocalStorage(int key) {
+	        return (String) js.executeScript(String.format("return window.localStorage.key('%s');", key));
+	    }
+
+	    public Long getLocalStorageLength() {
+	        return (Long) js.executeScript("return window.localStorage.length;");
+	    }
+
+	    public void setItemInLocalStorage(String item, String value) {
+	        js.executeScript(String.format("window.localStorage.setItem('%s','%s');", item, value));
+	    }
+
+	    public void clearLocalStorage() {
+	        js.executeScript(String.format("window.localStorage.clear();"));
+	    }
+	}
+
+
+====================================================
+How to scroll web page UP or Down using Selenium WebDriver?
+====================================================
+
+++++++++++++
+How to scroll Page UP using Selenium WebDriver:
+++++++++++++
+
+	@Test(groups = {"smoke"})
+	public void test_Scroll_Page_UP() throws Exception {
+	init();
+
+
+	driver.navigate().to("http://www.alexa.com/topsites/countries;15/LU");
+
+	JavascriptExecutor jse = (JavascriptExecutor) driver;
+	jse.executeScript("window.scrollBy(0,-250)", ""); //To Down 250 To Up -250
+	}
+
+
+++++++++++++
+How to scroll to the Bottom of the Web Page using Selenium WebDriver:
+++++++++++++
+
+	@Test(groups = {"smoke"})
+	public void test_Scroll_Page_To_Bottom() throws Exception {
+	init();
+
+
+	driver.navigate().to("http://www.alexa.com/topsites/countries;15/LU");
+
+	JavascriptExecutor jse = (JavascriptExecutor) driver;
+	jse.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+	}
+
+
+++++++++++++
+How to scroll Page to a Web Element Selenium WebDriver:
+++++++++++++
+
+	@Test(groups = {"smoke"})
+	public void test_Scroll_Page_To_Element() throws Exception {
+	init();
+
+
+	driver.navigate().to("http://www.alexa.com/topsites/countries;15/LU");
+
+	JavascriptExecutor jse = (JavascriptExecutor) driver;
+
+	WebElement element = driver.findElement(By.linkText("Google.com.ph"));
+	jse.executeScript("arguments[0].scrollIntoView();", element);
+	}
+
+++++++++++++
+How to scroll Page Down or UP using Keys Selenium WebDriver:
+++++++++++++
+
+	@Test(groups = {"smoke"})
+	public void test_Scroll_Page_Using_Keys() throws Exception {
+	init();
+
+
+	driver.navigate().to("http://www.alexa.com/topsites/countries;15/LU");
+
+	Actions action = new Actions(driver);
+	action.sendKeys(Keys.PAGE_DOWN);
+	waitSeconds(2);
+	action.click(
+	    driver.findElement(By.partialLinkText("Google.com.ph"))
+	).perform();
+	}

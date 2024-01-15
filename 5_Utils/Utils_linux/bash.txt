@@ -10,27 +10,44 @@ do
 	esac
 done
 
-Óäîáíàÿ êîìàíäà äëÿ ïåðåáîðà îïöèé, ÷òî çàäàíû äëÿ ñêðèïòà, ïðè ýòîì íå íóæíî ñìåùàòüñÿ ïî ïåðåìåííûì êàê äåëàåò Àéíóð ÷åðåç shift
-
 
 Find
-	> find /mnt/nfs_fst -name *.txt -type f -mmin -XXXX -exec ls -al "{}" \; - Ïîèñê ôàéëîâ ñ âðåìåíåì ìîäèôèêàöèè íå áîëåå XXXX ìèíóò. Åñëè ïîñòàâèòü +XXXX òî ïîëó÷èì íå ìåííå ÷åì XXXX ìèíóò íàçàä, ò.å. óäàëÿåì áîëåå ñòàðûå ôàéëû.
-	> find /mnt/nfs_fst -name *.txt -type f -mmin -XXXX -print; - Ïîèñê ôàéëîâ ñ âðåìåíåì ìîäèôèêàöèè íå áîëåå XXXX ìèíóò.
+	> find /mnt/nfs_fst -name *.txt -type f -mmin -XXXX -exec ls -al "{}" \;óäàëÿåì áîëåå ñòàðûå ôàéëû.
+	> find /mnt/nfs_fst -name *.txt -type f -mmin -XXXX -print;
 		Äëÿ óäàëåíèÿ ìîæíî èñïëüçîâàòü íå -exec à -delete
 		
-	> find / -mtime +50 –mtime -100; ìîäèôèöèðîâàííûå ìåæäó 100äíåé è 50äíåé
+	> find / -mtime +50 –mtime -100;
 		
-	> find /path -type d -print0 | xargs -0 ls -al; exec ðàáîòàåò â 10 ðàç ìåäëåííåå xarg. Ïî ýòîìó ìîæíî èñïîëüçîâàòü èìåííî xarg. Ïðè ýòîì -0 ïîçâîëÿåò îáðàáàòûâàòü àðãóìåíòû ñîäåðæàùèå ïðîáåëû è êàâû÷êè.
+	> find /path -type d -print0 | xargs -0 ls -al;
 	
 	> find /mnt/nfs_fst/ -regextype posix-egrep -regex '.*(([a-zA-Z0-9]){8}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){12})' -mmin -XXXX -type d -empty -exec rm -rf "{}" \;
-	> find /mnt/nfs_fst/ -maxdepth 6 -regextype posix-egrep -regex '.*(([a-zA-Z0-9]){8}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){12})' -mmin -XXXX -type d -empty -exec rm -rf "{}" \; èùìå ïóñòûå êàòàëîãè, íî ïðè ýòîì íå ãëóáæå 6ãî óðîâíÿ êàòàëîãîâ. Àíàëîãè÷íûé ïàðàìåòð -empty ïîäõîäèò è äëÿ ôàéëîâ.
+	> find /mnt/nfs_fst/ -maxdepth 6 -regextype posix-egrep -regex '.*(([a-zA-Z0-9]){8}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){4}-([a-zA-Z0-9]){12})' -mmin -XXXX -type d -empty -exec rm -rf "{}" \;
 	
 	
 	find . \( -name "my*" -o -name "qu*" \) -print; - ïîèñê ñ ÈËÈ
 	find . \( -name "my*" -a -name "qu*" \) -print; - ïîèñêñ ñ È
 
 
-	Bash
+	> Find directory between tow date
+		find /path/to/search -type d -newermt "YYYY-MM-DD" ! -newermt "YYYY-MM-DD"
+
+	> Find directories modified in the last 7 days
+		find ~/Test/ -type d -mtime -7
+
+	> Find a directory modified more than N days ago
+		find /path/to/search -type d -mtime +days
+
+	> Find empty directories
+		find ~/Test/ -type d -empty
+
+
+	> Rename Files. Search Dir and In dir rename Files. Перемименовываем префикс у файла
+		find ./ -type d -exec bash -c 'cd "$0"; find -maxdepth 1 -type f -name "\[SW\.BAND\]*" | while read i; do mv "$i" "$(echo "$i" | sed 's/SW.BAN  D/_/')"; done' {} \;
+
+
+
+Время:
+
 	#Синхронизация времени:
 	ntpdate 192.168.218.5
 	 
@@ -44,3 +61,86 @@ Find
 	DATE_STOP=$(date +"%s")
 	 
 	echo "Время выполнения команды - `date -u -d @"$(($DATE_STOP-$DATE_START))" +'%-Hh %-Mm %-Ss'`"
+
+
+Фигурные скобки и работа с параметрами:
+	https://www.baeldung.com/linux/bash-string-manipulation
+
+	Parameter Substitution:
+		${parameter} 
+			Same as $parameter, i.e., value of the variable parameter.
+
+		${parameter-default}, ${parameter:-default}
+			If parameter not set, use default.
+			${parameter-default} and ${parameter:-default} are almost equivalent. The extra : makes a difference only when parameter has been declared, but is null.		
+
+		${parameter=default}, ${parameter:=default}
+			If parameter not set, set it to default.
+
+		${parameter+alt_value}, ${parameter:+alt_value}
+			If parameter set, use alt_value, else use null string.
+
+		${parameter?err_msg}, ${parameter:?err_msg}
+			If parameter set, use it, else print err_msg and abort the script with an exit status of 1.
+				Both forms nearly equivalent. The : makes a difference only when parameter has been declared and is null, as above.
+
+	Подстрока:	
+		MyString=123456qwerty
+		echo ${myString:6} #Выведет qwerty #${string:position}
+		echo ${myString:1:6} #Выведет 23456q где 6 это длина. # ${string:position:length}
+	#-------------------------------------------------
+	Длина строки
+		NAME=Baeldung
+		$ echo ${#NAME}
+
+	Замена подстроки на строку.
+		stringZ=abcABC123ABCabc
+		echo ${stringZ/#abc/XYZ}          # XYZABC123ABCabc
+	    	                              # Replaces front-end match of 'abc' with 'XYZ'.
+
+		echo ${stringZ/%abc/XYZ}          # abcABC123ABCXYZ
+	    	                              # Replaces back-end match of 'abc' with 'XYZ'.
+
+
+		${string/substring/replacement}		# Replace first match of $substring with $replacement. #Replace only first match ${string/pattern/replacement}
+
+		${string//substring/replacement} # Replace all matches of $substring with $replacement. #Replace all the matches ${string//pattern/replacement}
+	#-------------------------------------------------
+	Удаление подстроки
+		${string#substring}		# Deletes shortest match of $substring from front of $string.
+		${string##substring}	# Deletes longest match of $substring from front of $string.
+
+		${string%substring}		# Deletes shortest match of $substring from back of $string.
+		${string%%substring}	# Deletes longest match of $substring from back of $string.
+
+	#Регулярка
+		if [[ "file.jpg" = *.jp?(e)g ]]; then echo "is jpg"; fi # Выведет: is jpg
+			*(pattern) – matches any number of occurrence of pattern
+			?(pattern) – matches zero or one occurrence of pattern
+			+(pattern) – matches one or more occurrence of pattern
+			!(pattern) – negates the pattern, matches anything that doesn’t match the pattern
+
+
+
+
+Treem string
+	this_string="Dave Geek!"
+	echo How-To ${this_string#Dave} # Удалит Dave и выведет "How-To Geek!"
+
+Квадртаные скобки (square brackets):
+	[ ! -d ./backup ] && mkdir ./backup # Если нет каталога, то создать.
+
+Regexp в ls:
+	ls badge_[01][789].txt
+	ls badge?.txt
+	ls badge?.txt
+
+Параметры в скрипт:
+	$# - количество прееданных параметров
+	$* - все параметры как одна строка
+	$@ - все параметры как отдельные слова
+	$1 - параметр, позиционно
+	$? - This is the exit status of the last executed command.
+
+Фигурные скобки
+	echo a{d,c,b}e # Вывод "ade ace abe"

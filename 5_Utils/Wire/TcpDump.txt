@@ -12,5 +12,90 @@ tcpdump src <ip>
 tcpdump port <port>
 
 
-
 tcpdump -i eth0 host <ip> -C 100 -z "gzip" -s 65535 -w <file.log>
+		-C - размер файла в МБ.
+		-c <packets> Exit after receiving a specific number of packets
+		-w - файл
+		-s - говорит о размере пакета. Older versions of tcpdump truncate packets to 68 or 96 bytes. If this is the case, use -s to capture full-sized packets.
+			By default tcpdump only saves the first 64 bytes of each frame when capturing to a file. This is enough to contain the IP and protocol header for most protocols, but limits the usability of capture files. By using the -s flag, tcpdump can be told how much of the frame to capture, in bytes. This is called the snap length.
+				Example Uses of tcpdump -s
+					-s 500
+				Capture the first 500 bytes of each frame
+
+					-s 0
+				Capture each frame in its entirety
+
+		-n flag
+			Do not resolve IP addresses using reverse DNS.
+
+------------------------------------------------------------------------
+Display all HTTP traffic to or from 192.168.1.11
+	tcpdump -ni igb1 host 192.168.1.11 and tcp port 80
+
+Display all HTTP traffic from either 192.168.1.11 or 192.168.1.15
+	tcpdump -ni igb1 host 192.168.1.11 or host 192.168.1.15 and tcp port 80
+
+
+Filter expressions must come after every command line flag used. Adding any flags after a filter expression will result in a syntax error.
+	Incorrect ordering
+		tcpdump -ni igb1 -T carp carp -c 2
+
+	Correct ordering
+		tcpdump -ni igb1 -T carp -c 2 carp
+
+
+Подсчёт UDP пакетов
+	To count outgoing UDP packets, run 
+		<tcpdump -Q out udp > outgoing>
+			and count the number of lines of the outgoing file.
+	To count incoming UDP packets, run 
+		<tcpdump -Q in udp > incoming>
+			and count the number of lines of the incoming file.
+
+Захват UDP
+	I would use
+		sudo tcpdump -i eth0 -s 0  -w tcpdump.pcap host hostA and udp
+	to up the length to "a lot", write the data to a file and use host rather than src to capture the data in both directions. Essentially you are missing the word and between src and udp.
+
+
+https://dzone.com/articles/tcpdump-learning-how-read-udp
+We used tcpdump to capture any UDP packets on port 8125 like so
+	tcpdump -i lo udp port 8125 -vv -X
+
+		-vv just gives us more verbose output
+		-X prints out the data in the UDP packets in ASCII as well as hex. If we just wanted the latter we could use the -x option
+
+			Еща так видел -XAvvv
+
+
+
+
+
+TSHARK
+	tshark -D - отобразит все доступные интерфейсы
+
+					-Y 'display filter' - это как я понял для обработки уже захваченного трафика. К примеру при чтении из файла.
+					-f 'drop filter' - это для захвата и отброса лишнего. Как правило эти фильтры простые.
+
+				tshark -f "icmp or tcp port 80" -i eth0
+				tshark -f "udp port 80"
+
+				tshark -f "udp" -i eth0 -Y "ip.dst == 224.2.2.2" # -Y это аналог фильтра в WireShark. Это фильтр для UDP где принимающая сторона 224.2.2.2
+				tshark -f "udp" -i eth0 -Y "ip.src == 192.168.226.178" # Здесь отправляющая строна 192.168.226.178
+					#  "tcp.dstport != 80" Удалённый порт не равен 80му или "udp.dstport != 8995"
+
+
+	1. tshark -i <interface> -w <file_to_write.pcap>
+	2. Cancel Ctrl
+	3. tshark  -r <fiel_to_read.pcap> -Y http 
+										-Y "http.request.uri contanins systembc" # Это было подсмотрено в WireShark в самом низу окна
+										-Y "http.file_data contains xfc"
+	4. tshark  -r <fiel_to_read.pcap> -Y http -V # For see tree view
+													-e http.file_data -T fields
+
+
+    5. tshark -X lua_script:<lua_file.lua> <file_to_read.pcapng>
+
+tshark -r filemame.dmp -R "udp" -2 -Y "data.data[0:3] == 07:03:00" -V
+
+tshark -Y "udp" -X "lua_script:pcap_file.lua" -r filemame.dmp
