@@ -1,0 +1,68 @@
+You can use Lua with TShark to analyze network traffic in real time by leveraging TShark's Lua API. Here's a guide on how to parse and analyze packets on the fly:
+
+1. Enable Lua Support in TShark
+
+Make sure your TShark installation includes Lua support. You might need to install a separate package or build TShark with Lua enabled.
+
+2. Basic Lua Script Structure
+
+Create a Lua script (e.g., analyze.lua) with the following structure:
+
+-- Function called for each captured packet
+function process_packet(pinfo, buffer)
+   -- Access packet details from pinfo table
+   local timestamp = pinfo.rel_ts  -- Relative timestamp
+   local source_ip = pinfo.src_ip  -- Source IP address
+   local dest_ip = pinfo.dst_ip    -- Destination IP address
+   local protocol = pinfo.protocol -- Protocol (TCP, UDP, etc.)
+
+   -- Analyze the raw packet data (optional)
+   local packet_data = buffer
+
+   -- Perform your analysis or processing here
+   if protocol == "TCP" and source_ip == "192.168.1.100" then
+      print("TCP packet from 192.168.1.100 captured at:", timestamp)
+   end
+end
+
+-- Register the callback function
+tshark.register_tap_listener(process_packet) 
+
+
+3. Run TShark with Your Lua Script
+
+Use the following command to start TShark, capturing on the desired interface (e.g., eth0) and running your Lua script:
+
+tshark -i eth0 -X lua_script:analyze.lua
+
+
+Explanation:
+
+- tshark.register_tap_listener(process_packet):This line registers your `process_packet` function as a callback. TShark will call this function for every packet it captures.
+
+- `pinfo` Table:The pinfo table provides a wealth of information about the captured packet:
+    - pinfo.rel_ts: Relative timestamp
+    - pinfo.abs_ts: Absolute timestamp
+    - pinfo.src_ip, pinfo.dst_ip: Source and destination IP addresses
+    - pinfo.src_port, pinfo.dst_port: Source and destination ports (if applicable)
+    - pinfo.protocol: Protocol (TCP, UDP, ICMP, etc.)
+    - pinfo.len: Packet length
+    - And many more fields!  Use print(pinfo) to see all available fields.
+
+- buffer: This variable holds the raw packet data as a Lua string. You can use Lua's string manipulation functions or other libraries to parse and analyze the packet payload.
+
+Example Use Cases:
+
+- Intrusion Detection: Identify suspicious patterns in network traffic, such as port scans or known attack signatures.
+- Protocol Analysis: Study the behavior of specific protocols, count message types, or extract data from protocol fields.
+- Performance Monitoring:Monitor network bandwidth usage, packet rates, and identify bottlenecks.
+- Custom Reporting: Generate real-time reports on network activity, filter data, and export results.
+
+Tips:
+
+- TShark Fields:Use the -T fields option with TShark to display specific fields for easier scripting (e.g., tshark -i eth0 -T fields -e ip.src -e tcp.port -X lua_script:analyze.lua).
+
+- Lua Libraries:Utilize Lua's standard library (e.g., string, table, math) and external libraries (if needed) to extend your analysis capabilities.
+
+- TShark Documentation:Refer to the TShark documentation and the Lua API reference for a complete list of available functions, fields, and options:
+    - https://www.wireshark.org/docs/wsug_html_chunked/

@@ -31,7 +31,7 @@ feed---fed---fed	|	Кормить
 feel---felt---felt	|	Чувствовать
 fight---fought---fought	|	Бороться
 find---found---found	|	Находить
-fit---fit---fit	|	Подходитьпоразмеру
+fit---fit---fit	|	Подходить по размеру
 fly---flew---flown	|	Летать
 forget---forgot---forgotten	|	Забывать
 forgive---forgave---forgiven	|	Прощать

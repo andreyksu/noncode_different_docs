@@ -87,8 +87,8 @@ Astra_1.6 Подключение по удалёнке
    https://wiki.astralinux.ru/pages/viewpage.action?pageId=57443684
     
     -------------------------------
-    usercaps off0327 просмотр привелегий.
-    usermac off0327
+    usercaps off0327        - просмотр привелегий (parsec)
+    usermac off0327         - 
     pdpl-user off0327
     fly-admin-smc &
     -------------------------------
@@ -210,3 +210,59 @@ Astra_1.6 Подключение по удалёнке
     
     systemctl restart apache2
         В логах /var/log/apache2/error.log
+
+Ошибка вида:
+    apt update
+        """
+        Writing more data than expected (35313 > 7809)
+        Hashes of expected file:
+        """
+
+    Решается строкой:
+        sudo apt -o Acquire::https::No-Cache=True -o Acquire::http::No-Cache=True update
+
+    Или можно почистить кэши
+        sudo rm /var/lib/apt/lists/*_*
+
+    А вообще была проблема из за Прокси. Убрал прокси - ошибка исчезла.
+
+
+
+
+
+###########################---2024-07---###########################
+# sudo postgres
+
+### Посмотреть размер БД и таблиц.
+psql -c "\l+ library"
+### Таблицы
+psql -d library -c "\d+ " > log.log
+grep -Pn " [MG]B" log.log
+    
+
+### Печатает только те строки, 4ый столбец которых равен 500
+awk -F ',' '$4 == "500" {print}' Test_Plan_Create_Libs_and_Books___Aggregate_Report.log | sort | uniq
+
+### Преобразует timestamp в читаемое время. 
+awk '{ 
+        timestamp_ms = $1;  # Assuming the timestamp is in the first column ($1)
+        timestamp_sec = substr(timestamp_ms, 1, length(timestamp_ms)-3) # Extract seconds (старт и длина)
+        milliseconds = substr(timestamp_ms, length(timestamp_ms)-2, 3); # Extract milliseconds
+        formatted_time = strftime("%Y-%m-%d %H:%M:%S", timestamp_sec); # Format the date and time 
+        print formatted_time "." milliseconds  # Combine the formatted time and milliseconds 
+     }' input_file
+     
+
+### Перемешивает строки. 
+shuf input_file.txt > shuffled_file.txt
+
+### Объединяет строки двух файлов.
+paste -d '\n' file1.txt file2.txt > mixed_file.txt
+
+### Удаляет пустые строки.
+sed -i '/^$/d' file.txt - 
+
+
+
+Добавляем еще один IP для сетевого интерфейса
+    sudo ip addr add 192.168.215.208/24 dev eth0
