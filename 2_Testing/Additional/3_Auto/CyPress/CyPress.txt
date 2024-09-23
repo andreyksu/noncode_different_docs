@@ -1,0 +1,2 @@
+- However, remember that Cypress commands themselves are asynchronous, but .within() ensures that all nested commands are scoped correctly without needing explicit .then() chaining.
+- Cypress doesn't kick off the browser automation until the test function exits.

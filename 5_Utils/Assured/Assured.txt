@@ -1,0 +1,35 @@
+bundled - cвязанные, поставляемый
+bundle - вязать(connect), поставлять (supply)
+
+
+
+Глобально
+RestAssured.basePath = basePath;
+
+На уровне одного запроса.
+given().basePath(basePath)...
+
+
+//-----------------------------------------
+ContentType/Accept
+
+// вот то плохая практика написания:
+given().header("content-type", "application/json").header("accept", "application/json")...;
+
+// а вот эта хорошая:
+given().contentType(ContentType.JSON).accept(ContentType.JSON)...;
+
+
+//-----------------------------------------
+StatusCode и т. п.
+
+// это плохая практика написания:
+Response response = given()...when().get(someEndpoint);
+Assert.assertEquals(200, response.then().extract().statusCode());
+
+//а это хорошая:
+given()...when().get(someEndpoint).then().statusCode(200);
+
+
+//-----------------------------------------
+Используйте спецификации

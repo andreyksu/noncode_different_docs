@@ -1,0 +1,107 @@
+SpringBoot + Flyway - "Java-проект от А до Я"
+    https://javarush.com/groups/posts/3157-java-proekt-ot-a-do-ja-springboot--flyway
+
+Flyway/Liquibase
+
+Что в рамках этого нам нужно сделать?
+    Запустить SpringBoot приложение на базе Maven.
+    Добавить туда Flyway: благо, они легко интегрируются.
+    Добавить схему таблиц, которые есть у нас в примере базы данных.
+    
+    
+
+Flyway
+Lombok
+
+spring.datasource.url=jdbc:mysql://localhost:3306/flyway_demo_db
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+
+Шаблон Миграции
+V<VERSION>__<NAME>.sql
+
+
+Создадим V00001__Create_country_table.sql в соответствующей папке:  /src/main/resources/db.migration/. 
+Это может быть обычное создание таблицы.
+Или добавление данныдх
+
+--------------------------------------------------------------------------------------------------
+
+JdbcTemplate – это центральный класс в основном пакете JDBC. Он обрабатывает создание и освобождение ресурсов, что помогает избежать распространенных ошибок, например, если забыть закрыть соединение. Он выполняет базовые задачи основного рабочего процесса JDBC (такие как создание и выполнение инструкций), оставляя код приложения, чтобы предоставлять SQL и извлекать результаты. Класс JdbcTemplate:
+    Выполняет SQL-запросы
+    Обновляет стейтменты и вызовы хранимых процедур
+    Выполняет итерацию экземпляров ResultSet и извлечение возвращаемых значений параметров.
+     Перехватывает исключения JDBC и преобразовывает их в типизированную, более информативную иерархию исключений, определенную в пакете org.springframework.dao. (См. раздел Согласованная иерархия исключений).
+     
+     
+DataSource всегда должен конфигурироваться в виде бина в IoC-контейнере Spring. В первом случае бин передается службе напрямую; во втором случае он передается подготовленному шаблону.
+
+
+Количество строк.
+int rowCount = this.jdbcTemplate.queryForObject("select count(*) from t_actor", Integer.class);
+int countOfActorsNamedJoe = this.jdbcTemplate.queryForObject("select count(*) from t_actor where first_name = ?", Integer.class, "Joe");
+
+String lastName = this.jdbcTemplate.queryForObject("select last_name from t_actor where id = ?", String.class, 1212L);
+
+Actor actor = jdbcTemplate.queryForObject(
+        "select first_name, last_name from t_actor where id = ?",
+        (resultSet, rowNum) -> {
+            Actor newActor = new Actor();
+            newActor.setFirstName(resultSet.getString("first_name"));
+            newActor.setLastName(resultSet.getString("last_name"));
+            return newActor;
+        },
+        1212L);
+        
+List<Actor> actors = this.jdbcTemplate.query(
+        "select first_name, last_name from t_actor",
+        (resultSet, rowNum) -> {
+            Actor actor = new Actor();
+            actor.setFirstName(resultSet.getString("first_name"));
+            actor.setLastName(resultSet.getString("last_name"));
+            return actor;
+        });
+        
+        
+private final RowMapper<Actor> actorRowMapper = (resultSet, rowNum) -> {
+    Actor actor = new Actor();
+    actor.setFirstName(resultSet.getString("first_name"));
+    actor.setLastName(resultSet.getString("last_name"));
+    return actor;
+};
+public List<Actor> findAllActors() {
+    return this.jdbcTemplate.query("select first_name, last_name from t_actor", actorRowMapper);
+}
+
+
+
+-------
+update
+
+this.jdbcTemplate.update(
+        "insert into t_actor (first_name, last_name) values (?, ?)",
+        "Leonor", "Watling");
+        
+this.jdbcTemplate.update(
+        "update t_actor set last_name = ? where id = ?",
+        "Banjo", 5276L);
+        
+this.jdbcTemplate.update(
+        "delete from t_actor where id = ?",
+        Long.valueOf(actorId));
+        
+-------
+Другие операции JdbcTemplate
+Можно использовать метод execute(..) для выполнения произвольного SQL. Следовательно, этот метод часто используется для стейтментов на языке определения данных (Data Definition Language /DDL). 
+
+this.jdbcTemplate.execute("create table mytable (id integer, name varchar(100))");
+
+this.jdbcTemplate.update(
+        "call SUPPORT.REFRESH_ACTORS_SUMMARY(?)",
+        Long.valueOf(unionId));
+        
+-------
+Оптимальные методы работы с JdbcTemplate
+После завершения конфигурирования экземпляры класса JdbcTemplate являются потокобезопасными. Это важно, поскольку означает, что можно сконфигурировать один экземпляр JdbcTemplate и затем безопасно внедрить эту общую ссылку в несколько DAO (или репозиториев). JdbcTemplate сохраняет состояние, поскольку хранит ссылку на DataSource, но это состояние не является диалоговым состоянием.

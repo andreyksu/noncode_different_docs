@@ -58,3 +58,35 @@
     # Удаление коммита.
         pick 461cb2a This commit is OK
         drop 5aecc10 This commit is broken
+
+
+
+
+
+Rebase/Cherry-pick
+
+Cherry-pick 
+    Берёт целевой коммит в ветке но не всю ветку для слива с текущей веткой.
+
+    По сути git rebase  это автоматизированный cherry-pick - но для цепочки коммитов, как бы перенося ветку на новое место.
+
+    Основное отличие cherry-pick от rebase заключается в том, что cherry-pick переносит отдельно выбранные коммиты (их оригиналы при этом остаются нетронутыми, а в новой ветке создается их "копия" с новыми хешами), в то время как rebase переносит целую последовательность коммитов, перестраивая историю веток (чем-то напоминая операцию "вырезать - вставить").
+
+
+    git log --oneline --graph --decorate --all -n 10
+
+
+
+    Находим нужный коммит:
+        git log feature --oneline
+        # abc123 fix: Critical null pointer exception in user service
+        # def456 test: Add test cases
+        # ghi789 fix: Handle edge cases
+        # jkl012 feat: Add new user registration flow
+        # ...
+
+    Переключаемся в целевую ветку version/2.0, в которую хотим перенести баг-фикс:
+        git checkout version/2.0
+
+    Применяем нужный коммит (с автоматическим добавлением информации об оригинальном коммите):
+        git cherry-pick -x abc123

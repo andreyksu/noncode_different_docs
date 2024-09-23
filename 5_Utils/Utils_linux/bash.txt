@@ -44,8 +44,6 @@ Find
 	> Rename Files. Search Dir and In dir rename Files. Перемименовываем префикс у файла
 		find ./ -type d -exec bash -c 'cd "$0"; find -maxdepth 1 -type f -name "\[SW\.BAND\]*" | while read i; do mv "$i" "$(echo "$i" | sed 's/SW.BAN  D/_/')"; done' {} \;
 
-
-
 Время:
 
 	#Синхронизация времени:

@@ -1,0 +1,100 @@
+
+SELECT Cast(10 AS VARCHAR);
+SELECT CONVERT(VARCHAR, 10);
+
+SELECT Len('banana'); -- 6
+SELECT * FROM String_split('apple,banana,cherry', ','); -- разделяет строку в таблицу подстрок
+SELECT Concat('apple', 'banana', 'cherry'); -- 'applebananacherry'
+
+
+SELECT Replace('banana', 'a', 'e'); -- Benene
+SELECT Mid('apple', 2, 3); -- 'ppl'
+SELECT Substring('banana', 2, 3); 
+SELECT RIGHT('banana', 3); -- 'ana' - количество строк с конце строки
+SELECT Trim(' banana ');
+
+SELECT Rand(); -- 0.7750247322012854
+SELECT Format(12345.6789, '#,##0.00');  -- 12,345.68
+
+SELECT Dateadd(day, 7, '2023-05-05'); -- '2023-05-12'
+SELECT Date_format('2023-05-05', '%m/%d/%Y'); 
+SELECT Datepart(year, '2023-05-05'); 
+SELECT Week('2023-05-05'); -- 18
+
+
+SELECT IF(1 = 1, 'true', 'false'); -- две тождественные записи
+SELECT CASE
+         WHEN 1 = 1 THEN 'true'
+         ELSE 'false'
+       END;
+	   
+	   
+CREATE VIEW player_stats
+AS
+  SELECT hits,
+         runs,
+         rbis,
+         batting_avg,
+         steals,
+         slugging_pct
+  FROM   baseball_team; 
+  
+  
+SELECT *
+FROM   baseball_team
+ORDER  BY rbis DESC
+LIMIT  5 offset 5; 
+-- This would select the top 5 players with the highest number of RBIs, starting from the 6th result.
+
+
+SELECT *
+FROM   baseball_team
+WHERE  EXISTS (SELECT *
+               FROM   teams
+               WHERE  baseball_team.id = teams.id); 
+-- This would select all players from the table that have a corresponding entry in the team’s table.
+
+
+SELECT *
+FROM   baseball_team
+WHERE  rbis IS NOT NULL; 
+
+
+SELECT Avg(batting_average)
+FROM   baseball_team
+GROUP  BY hits
+HAVING hits >= 100; 
+
+
+SELECT player_name,
+        case when batting_average >= .300 THEN
+'All-Star' else 'Not an All-Star' end AS all_star_status FROM baseball_team;
+
+
+
+
+-- SQL functions execute an arbitrary list of SQL statements, returning the result of the last query in the list.
+-- Any collection of commands in the SQL language can be packaged together and defined as a function.
+-- Alternatively, an SQL function can be declared to return a set (that is, multiple rows) by specifying the function's return type as SETOF sometype, or equivalently by declaring it as RETURNS TABLE(columns).
+-- The body of an SQL function must be a list of SQL statements separated by semicolons. A semicolon after the last statement is optional.
+-- You cannot use transaction control commands, e.g., COMMIT, SAVEPOINT, and some utility commands, e.g., VACUUM, in SQL functions.
+CREATE FUNCTION clean_emp() RETURNS void AS '
+    DELETE FROM emp
+        WHERE salary < 0;
+' LANGUAGE SQL;
+
+SELECT clean_emp();
+
+-- процедура без возврата значения, по сути делает тоже самое что и первая фунция
+CREATE PROCEDURE clean_emp() AS '
+    DELETE FROM emp
+        WHERE salary < 0;
+' LANGUAGE SQL;
+
+CALL clean_emp();
+
+-- In simple cases like this, the difference between a function returning void and a procedure is mostly stylistic. However, procedures offer additional functionality such as transaction control that is not available in functions.
+
+
+https://www.postgresql.org/docs/current/xfunc-sql.html
+https://learn.microsoft.com/ru-ru/sql/t-sql/statements/create-function-transact-sql?view=sql-server-ver16

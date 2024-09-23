@@ -1,0 +1,161 @@
+Node.js (libuv) Architecture
+
+    Single-threaded Event Loop (with 4 additional threads):
+        Primary Thread: Handles JavaScript execution and event loop (callbacks, promises).
+        Worker Thread Pool (4 threads by default):
+            Used for blocking I/O (filesystem, DNS, some crypto ops).
+!!!         Does NOT handle network I/O – sockets/epoll/kqueue are managed on the main thread.
+        Async I/O (network) uses OS-native APIs (epoll on Linux, kqueue on macOS).
+
+
+Primary Thread  Single JS thread
+I/O Threads 4 (fixed pool for FS/DNS)
+    Handles:
+        File system operations (fs.readFile).
+        DNS lookups (dns.lookup).
+        CPU-heavy crypto (crypto.pbkdf2).
+
+Network I/O Handled on main thread via epoll
+Blocking Operations Offloaded to thread pool
+
+
+Core Components of libuv
+    Component           Role
+    Event Loop          Single-threaded loop that schedules async tasks (timers, I/O callbacks).
+    Thread Pool         4 default threads for offloading blocking operations (FS, DNS, etc.).
+    I/O Polling         Uses OS-native APIs (epoll on Linux, kqueue on macOS, IOCP on Windows).
+    Handles             Abstraction for sockets, timers, processes, etc. (e.g., uv_tcp_t).
+
+
+
+Example: Reading from a TCP Socket in Node.js
+
+[Node.js Event Loop] 
+  → [libuv] 
+    → [epoll (kernel)] 
+      → [Kernel TCP Stack] 
+        → [Hardware (NIC)]
+
+Step-by-Step Breakdown
+
+    Node.js Event Loop (Single Thread)
+
+        Calls socket.read() (non-blocking).
+
+        If no data is ready, libuv registers interest in the socket via epoll.
+
+    libuv (C Library)
+
+        Uses epoll_ctl() to tell the kernel:
+        "Wake me up when data arrives on this socket."
+
+        No threads are used yet (this is just registration).
+
+    Kernel (epoll)
+
+        The Linux kernel maintains a wait queue for the socket.
+
+        When data arrives, the kernel's network stack processes it:
+
+            Packet arrives → NIC interrupts a CPU core.
+
+            Kernel thread (softirq) copies data to kernel buffer.
+
+            Kernel marks the socket as "ready" in epoll's ready list.
+
+    libuv Wakes Up
+
+        epoll_wait() returns with the ready socket.
+
+        The main Node.js thread processes the callback (still single-threaded).
+
+
+2. Where Kernel Threads Come In
+
+    Network I/O (TCP/UDP):
+
+        Handled by kernel threads (softirq, kworker).
+
+        Zero userspace threads (Node.js/Netty never sees these).
+
+    Disk I/O (File System):
+
+        Blocking operations are offloaded to libuv's thread pool (default: 4 threads).
+
+        Async disk I/O (Linux io_uring) avoids threads (but Node.js doesn’t use this yet).
+
+3. Proof: Observing Kernel Threads
+
+    Run this on Linux to see kernel threads handling I/O:
+    bash
+
+    watch -n 1 'ps -eLf | grep -e "kworker\|softirq"'
+
+        kworker: Handles deferred work (e.g., TCP packet processing).
+
+        softirq: Handles hardware interrupts (NIC → kernel buffer).
+
+
+
+
+-----------------------
+Node.js fs.readFile()
+
+[Node.js] → [libuv thread pool] → [Kernel syscall] → [Disk controller] → [HDD/SSD]
+
+Step-by-Step Breakdown
+    1. Node.js Calls fs.readFile()
+        Libuv offloads the call to a thread pool thread (default: 4 threads).
+        The V8 thread continues running other JS code.
+    2. Thread Pool Thread Makes a Blocking Syscall
+        // Under the hood in libuv:
+        read(fd, buffer, size);  // Blocks the thread until data arrives
+    3. Kernel Handles the Request
+        The Linux kernel:
+            Checks page cache (RAM). If data exists → returns immediately.
+            If not, sends a command to the disk controller.
+    4. Disk Controller Does DMA (Direct Memory Access)
+        The HDD/SSD reads data without CPU involvement
+        Data is copied directly to kernel memory via DMA.
+    5. Kernel Wakes Up the Thread
+        The blocked libuv thread resumes.
+        Data is returned to Node.js, which triggers your callback.
+
+Why Disk I/O Needs Threads (Unlike Network I/O)
+    No Hardware Interrupts for Completion
+        Disks use DMA + polling (not interrupts).
+        The kernel must block until data is ready.
+    Seek Times Are Slow
+        HDD: ~5ms (physically moving the head).
+        SSD: ~0.1ms (still much slower than RAM).
+
+Key Limitation
+    If you have 4 libuv threads and 5 concurrent fs.readFile calls, the 5th operation stalls until a thread is free.
+
+Optimizing Disk I/O in Node.js/Java
+1. Increase Thread Pool Size (Node.js)
+    UV_THREADPOOL_SIZE=16 node app.js  # Now 16 threads handle disk I/O    
+2. Use Asynchronous Disk I/O (Linux 5.1+ io_uring)
+    Bypasses threads entirely (like epoll for networks).
+    Not yet in Node.js, but available in:
+        Java: Project Loom (virtual threads + io_uring).
+        Rust/C: Direct io_uring syscalls.
+3. Cache Frequently Used Files
+    const cache = new Map();
+
+    function readCached(file) {
+      if (cache.has(file)) return cache.get(file);
+      const data = fs.readFileSync(file);  // Blocking, but cached
+      cache.set(file, data);
+      return data;
+    }
+
+
+How Linux Handles Disk I/O Internally
+    Page Cache (Kernel keeps recently read files in RAM).
+    I/O Scheduler (Merges/reorders requests for efficiency).
+    Block Layer (Converts filesystem ops to disk sectors).
+    Device Driver (Sends commands to SSD/HDD).
+Observing Disk I/O Threads
+    watch -n 1 'ps -eLf | grep kworker'
+        kworker/* threads handle disk I/O completion.

@@ -1,0 +1,172 @@
+Topic / Partition / Offset
+
+	At most once (Не более одного раза)
+		Самый простой вариант — отправка в стиле Fire and Forget (Отправил и забыл). Большая часть сообщений доходит до получателя, но часть теряется из-за сбоев.
+
+	At least once (Хотя бы один раз)
+		Чтобы все данные достигли цели, могут предприниматься повторные отправки. Хотя бы одна попытка будет успешной. В таком случае сообщения не теряются, но могут дублироваться.
+		Обычно реализуется через механизм подтверждений (ACK, acknowledgment). Сообщение повторяется, если не получено подтверждение о доставке. Возможны дубли, если подтверждение потерялось или не было отправлено из-за сбоя.
+
+	Exactly once (Строго один раз)
+		Самый труднодостижимый вариант —максимальная гарантия доставки. Сообщения никогда не теряются и не дублируются, каждое доставляется ровно один раз.
+
+	Брокер, реализующий шаблон Point-to-Point, ассоциируется с термином Queue (Очередь). Сообщения отправителя попадают в очередь, получатель извлекает сообщения из очереди. После извлечения сообщение становится больше никому не доступными. Данные в очереди хранятся, пока они не будут прочитаны или не истечёт срок их действия.
+
+	В Pub-Sub ассоциируется с темой, топиком (Topic). Сообщения попадают в топик. Система распределяет каждое сообщение между всеми подписчиками топика (Broadcast, вещание). Сообщения могут храниться в топике, до тех пор, пока это необходимо для распространения данных между всеми подписчиками.
+
+	RabbitMQ традиционный брокер сообщений. Поддерживает обе модели Pub-Sub и Point-to-Point, протоколы AMQP, MQTT, STOMP и другие. Реализованы гарантии доставки сообщений At most once и At least once.
+		В упрощённом виде принципы работы RabbitMQ можно представить так: приложение-отправитель (Publisher) публикует сообщения в брокер, ссылаясь на его внутреннюю сущность Exchange (Обменник). Обменник в зависимости от типа и настроек перенаправляет сообщения в одну или более связанных с ним очередей (Queue). Приложения-подписчики (Consumer) держат постоянное TCP соединение с RabbitMQ и ждут сообщения из заданной очереди. Брокер отправляет (push), распределяет сообщения между подписчиками. Если у очереди несколько подписчиков, сообщения между ними распределяются равномерно. Если сообщение успешно обработано подписчиком, оно удаляется из очереди.
+			RabbitMQ может слать подтверждение отправителю после того, как сохранил его сообщение. Или ждать подтверждения от получателя об успешной обработке взятого из очереди сообщения.
+
+	Apache Kafka программный Pub-Sub брокер с открытым исходным кодом. Помимо гарантий доставки At most once и At least once, поддерживает Exactly once (Строго один раз).
+		- Реплицируемый, потому что все данные синхронизируются между нодами. Лог, входящие сообщения последовательно добавляются в журнал и остаются там неизменными, не удаляются при чтении, как это происходит в RabbitMQ.
+		- В Kafka отсутствует понятие очереди (Queue), приложения пишут или читают сообщения из партиционированных топиков (Topic). Если просто, то принцип работы такой: приложение-продюсер (Producer) отправляет сообщение в топик брокера, которое записывается в конец одной из его партиций (Partition). По умолчанию для распределения сообщений между партициями топика используется алгоритм Round-Robin. Отправитель может влиять на выбор партиции, передавая вместе с сообщением специальный ключ (Message Key).
+		- Приложения-подписчики (Consumer) читают, вытягивают (pull) сообщения из заданного топика. Для каждого подписчика Kafka запоминает указатель на последнее прочитанное им сообщение (offset). Если приложение падает, то восстановившись может продолжать чтение с прежнего места или перемотать (rewind) offset в прошлое и прочитать данные повторно.
+		- Для Kafka принцип «Тупой брокер, умный потребитель» означает, что, в отличие от RabbitMQ, он не занимается контролем и распределением сообщений. Потребители сами опрашивают брокер и решают, какие сообщения им читать, брокер только хранит данные.
+		- Количество партиций в топике зависит от количества его конкурирующих подписчиков. Одно приложение не может читать данные из одной партиции в несколько потоков. Параллелизм достигается за счёт увеличения количества партиций, для каждого потока своя.
+
+	тема (topic), раздел (partition) и позиция (offset) — три кита, на которых всё стоит.
+		Партиции или их еще называют разделы - это копии очередей наших сообщений.
+			За счет кластиризации партиции имеют копии - число которых задаётся коэффициентом реплизации (replicatio factor) - показывает на сколько брокеров будет скопирован данные с ведущего-лидера.
+				Это кроме надёжности еще предоставляет доступ к параллельности обработки сообщений.
+					Каждый консьюмер должен быть частью какой-нибудь консьюмер группы. Данная группа должна иметь уникальное название и должна быть зарегистрирована в кластере. Как правило, если у нас есть несколько консьюмеров, в одной группе, то они получают сообщения из разных партиций. Желательно, чтобы количество консьюмеров было равно количеству партиций, и каждый консьюмер читал сообщения из своей партиции, таким образом, распределяется нагрузка и повышается производительность работы.
+
+
+	Events are organized and durably stored in topics. Very simplified, a topic is similar to a folder in a filesystem, and the events are the files in that folder.
+
+	Topics in Kafka are always multi-producer and multi-subscriber: a topic can have zero, one, or many producers that write events to it, as well as zero, one, or many consumers that subscribe to these events. Events in a topic can be read as often as needed—unlike traditional messaging systems, events are not deleted after consumption.
+
+!	Topics are partitioned, meaning a topic is spread over a number of "buckets" located on different Kafka brokers.
+	When a new event is published to a topic, it is actually appended to one of the topic's partitions. Events with the same event key (e.g., a customer or vehicle ID) are written to the same partition, and Kafka guarantees that any consumer of a given topic-partition will always read that partition's events in exactly the same order as they were written. 
+
+
+	Partition (раздел) — это кусок темы, отдельный лог-файл внутри Kafka. Каждый topic состоит из одного или нескольких partition'ов.
+	    Параллелизм: несколько consumers могут читать разные partition'ы одновременно. Но одни partition может читать только один потребитель???
+    	Масштабируемость: больше partition'ов = больше производительности. Типо индексации ключей в базах данных но это совсем не так просто аналогия для размышления :)
+    	Отказоустойчивость: можно дублировать partition'ы на разные брокеры (об этом позже поговорим).
+
+    	Партиции - это копии очередей сообщений. Партиции распределены по брокерам класстера.
+    		У каждой партиции есть свой лидер (основной брокер) и его followers(реплики) - которые хранят копии.
+    			Рекамендуется делать количество партиций, равное количеству брокеров в кластере (но это не обязательно, партиций может быть и больше и меньше чем количество брокеров). А может быть 3 брокера и на каждом будет по 2е партиции. Т.е. 6 партиций.
+
+    Offset — метка «где я остановился»
+		Offset (смещение) — это просто номер сообщения внутри partition (раздела).
+
+
+	[ Topic: user-events ]
+		├── Partition 0: login, login, logout
+		├── Partition 1: register, register
+		└── Partition 2: click, click, click
+
+		Каждый partition — это свой мини журнал, и у каждого события свой offset. Consumer сам решает, с какого места читать.
+
+
+	Вывод:
+	    Topic — это общий канал событий;
+	    Partition — делит этот канал на независимые потоки (разделы); Т.е. они по сути нужны для распараллеливания чтения - каждый консьюмер читает со своей партиции информацию отправленную в Topic
+	    Offset — показывает, где ты был в этом потоке;
+
+	    Kafka ничего не забывает. Ты всегда можешь «перемотать» назад, вперёд, или вообще начать сначала. Очень удобно для отладки, повторной обработки или восстановления данных.
+//------------------------
+		- Топик состоит из одного или нескольких партиций
+		- Потребители группируются в группы (по GroupId)
+		- Каждая партиция назначается только одному потребителю в рамках группы
+		- Разные группы могут читать одни и те же темы независимо
+
+
+Purpose of Consumer Groups
+
+    Message Distribution
+        Consumers in the same group share the workload of processing messages from partitions.
+        Each partition is assigned to only one consumer in the group at a time.
+        Example: If a topic has 3 partitions and 2 consumers in a group, Kafka will distribute partitions like this:
+            Consumer 1 → Partition 0 & Partition 1
+            Consumer 2 → Partition 2
+
+
+            One Partition → One Consumer (per Group):
+
+    Parallel Processing
+        Multiple consumers in a group allow for horizontal scaling of message processing.
+        If you add more consumers (up to the number of partitions), throughput increases.
+
+    Offset Tracking
+        Kafka tracks the last read position (offset) for each partition per group.
+        This ensures that even if a consumer crashes, the group can resume from where it left off.	
+
+
+    Microservices Architecture:
+    	Each service (e.g., payments-service, inventory-service) should have its own group to process the same data independently.
+    Testing: Create a temporary group (e.g., test-group) to replay messages without affecting production consumers.
+
+
+//------------------
+
+	Kafka гарантирует порядок сообщений в пределах одного раздела (partition).
+		Чтобы все события от одного пользователя шли строго по порядку надо правильно выбирать ключ.
+	Kafka несколько consumers могут читать одно и то же. Никто никому не мешает. (Видимо идёт речь про группы???)
+
+
+	Как я понял в рамках Topic можно создать не сколько Partiotion и читать эти Partititon пользователем из Group.
+		При этом из Group может конкретный Partition прочитать лишь один Consumer из Group.
+		Но каждой Partititon может быть назначено несколько Group.
+			Offset - запоминается для каждой группы. Тем самым обеспечивается разграничение по чтению и каждая группа читает независимо.
+
+Kafka is a distributed event streaming platform that lets you read, write, store, and process events (also called records or messages in the documentation) across many machines. 
+These events are organized and stored in topics. Very simplified, a topic is similar to a folder in a filesystem, and the events are the files in that folder. 
+
+A topic is a logical grouping of events in Kafka.
+
+
+
+
+docker run -d --name broker apache/kafka:latest
+docker exec --workdir /opt/kafka/bin/ -it broker sh
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic test-topic
+/opt/kafka_2.13-4.0.0/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic test-topic
+/opt/kafka_2.13-4.0.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning
+
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh 			--bootstrap-server=Lenovo-2:9092 --describe --topic my-topic_1
+/opt/kafka_2.13-4.0.0/bin/kafka-topics.sh 			--bootstrap-server Lenovo-2:9092 --list
+
+/opt/kafka_2.13-4.0.0/bin/kafka-consumer-groups.sh --bootstrap-server Lenovo-2:9092 --list
+/opt/kafka_2.13-4.0.0/bin/kafka-consumer-groups.sh --bootstrap-server Lenovo-2:9092 --describe --group my-group
+/opt/kafka_2.13-4.0.0/bin/kafka-consumer-groups.sh --bootstrap-server Lenovo-2:9092 --describe --group my-group --members
+/opt/kafka_2.13-4.0.0/bin/kafka-consumer-groups.sh --bootstrap-server Lenovo-2:9092 --group my-group --members  --delete-offsets
+
+
+
+sudo ufw status
+sudo ufw allow 8080
+sudo lsof -i :<port_number>
+telnet localhost 9092
+nc -zv localhost 9092
+
+
+listeners=PLAINTEXT://localhost:9092
+advertised.listeners=PLAINTEXT://localhost:9092
+
+docker run -d -p 9092:9092 --name brok apache/kafka:4.0.0
+docker run -d -v /opt/kaf_prop/server.properties:/opt/kafka/config/server.properties -p 9092:9092 --name brok apache/kafka:4.0.0
+
+docker exec --workdir /opt/kafka/bin/ -it broker_1 sh
+
+docker cp <container_name_or_id>:/opt/kafka/config/server.properties /path/to/kafka/config/
+
+
+When a client connects, the broker returns a set of connection URLs the client should then use for the client to connect for the producing or consuming of messages. How are these connection URLs configured?
+Each Kafka instance has a set of listeners and advertised listeners. The “listeners” are what Kafka binds to and the “advertised listeners” configure how clients should connect to the cluster. The connection URLs a client receives is based on which listener a client connects to.
+
+
+
+
+
+
+/opt/kafka/config/server.properties
+
+
+Интересно похоже.
+	https://habr.com/ru/articles/738874/
+
+Основная мурзилка
+	https://hub.docker.com/r/apache/kafka#quick-start

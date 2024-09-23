@@ -1,0 +1,89 @@
+inference	|вывод(conclusion), заключение(assumption);выведение(deducation);подразумеваемый(implicit)
+			| figure out
+linient		|снисходительный (condescending), мягкий (mild)
+tap 		|отвод (branch);винтель(valve);постукоивать(knock)
+newly		|вновь;заново(again);недавно(recently)
+indeed		|Н.действительно(really),в самом деле(certainly);несомненно;даже,более того(moreover) [ɪn'diːd]
+			|в действительности(in fact, actually)
+lookup		|поиск(search), просмотр(preview)
+<>			|angle braces
+()			|parentheises
+{}			|curly brackets
+[]			|square brackets
+peculiar	|своеобразный(unique),особенный(spqcial),необычный(unusual)
+strictness	|строгость
+stale		|не свежий, затхлый(musty);просроченный(expired)
+hood		|капюшон, козырёк
+embark		|начинать, начать(start), вступать(join)
+assets		|активы, имущество
+worn		|V3 - изношенный, поношенный
+
+caveat		|предостережение, предупреждение; возражение; пояснение, разъяснение
+worht		|значимость, ценность; стоимость, цена
+mentioning	|уомпоминание (regerence, notice)
+
+As such		|Союз.так же(as well);Н. по существу (in essence)
+encode		|зашифровать
+reverential	|ссылочный, справочный (reference)
+
+leverage - использовать(utilyze), усиливать(enhance)
+ever	 - всегда(always), вечно, постоянно,неизменно, когда-то(once), прежде
+insights	- идеи
+	insight	- понимание, постижение, знание
+along	- вместе,вперед, с  собой; вдоль, по
+
+evaluation, grade, estimation, estimate, valuation
+
+
+Supervising		|контролирующий [ˈsjuːpəvaɪzɪŋ]
+fluent			|беглый [ˈfluːənt]
+facilitate		|способствовать(promote,contribute),содействовать,стимулировать(encourage),продвагать(advance);поддерживать(support),обеспечивать(ensure)
+participate		|участвовать
+plan			|intend(намереваться), schedule - планировать
+	make plans 	|строить план
+	build plans	|строить планы, планировать
+offloading		|разгрузка (unload)
+lose			|терять(miss),потерять(disappear) [luːz]
+loser			|неудачник
+huge			|огромный(enormous), ,большой(large)
+gain			|получать(recieve,obtain), добиваться(achieve),преобретать(acquire), добиваться(achieve)
+volume			|объем(amount),количество(number), том(tom), книга
+simultaneously	|одновременно
+at most once	|самое больше один раз
+consistent		|последовательный,непротиворечивый; совместимый(compatible);стойкий(persistent),стабильный(stable)
+				|согласованный(agreed),соответствующий,отвечающий (conforming, corresponding)
+gracefully		|изящго, грациозно
+elections		|выборы (poll, selection, voting)
+tolerate		|терпеть(suffer); допускать(admit, allow); переносить,стерпеть (endure, bear)
+advertise		|рекламировать(promote), извещать(notify), объявлять(announce)
+cumbersome		|обременительный,тягостный; сложный(difficult),тяжелый(heavy)
+advertised		|рекламируемый
+advertise		|рекламировать(promote), извещать(notify), объявлять(announce)
+durably			|Н.долговечно;прочно, надёжно, длительно
+perception		|восприятие, осознание, осмысление, постижение(comprehension)
+competitive		|конкуретный,состязательный, соперничающий
+прямой      	|straight    [streɪt]
+растягивать 	|stretch     [streʧ]
+shutdown    	|закрытие, включение
+halt        	|остановка, останавливать (stop)
+iterability 	|прерывисто, повторяемость
+entran      	|абитуриент, тот кто входит
+dorman      	|спящий, дремлющий
+more accurately |[ˈækjərətlɪ]
+more precisely  |[prɪˈsaɪslɪ]
+more exactly    |[ɪgˈzæktlɪ] clearly, specifically
+As such			|Союз.так же(as well);Н. по существу (in essence)
+gently			|Н.нежно,мягко;осторожно();спокойно;
+perilous		|рискованный(risky), опасный(dangerous)
+plague			|беспокоить(bother), мучить(torment)
+firm			|твёрдый(solid), жёсткий(hard), решительный(strong), надёжный (reliable)
+somehow			|как-то(once), почему-то(for some reason)
+instance		|безумный, сумашедший, обезумевший (mad)
+fuzzy			|размытый. нечёткий.
+dangle			|болтаться,свисать(hange),висеть;дразнить(tease)
+launch			|запуск(start),начинать,открыть(open),развернуть(expand)
+execute			|выполнять;осуществлять(implement);произвести,совершить(produce)
+realise			|осуществлять
+labor			|труд
+sparing			|щадащий, скупой, экономия
+spare			|экономить;сберечь(save),жалеть(regret)

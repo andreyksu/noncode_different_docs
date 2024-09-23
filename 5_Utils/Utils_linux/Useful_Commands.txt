@@ -266,3 +266,9 @@ sed -i '/^$/d' file.txt -
 
 Добавляем еще один IP для сетевого интерфейса
     sudo ip addr add 192.168.215.208/24 dev eth0
+
+
+
+-------------------------------------
+sudo mount  ~/Desktop/ubuntu-12.04.3-desktop-i386.iso /media/apt
+sudo apt-cdrom --no-mount -d=/media/apt add

@@ -31,6 +31,11 @@ even though		|даже не смотря на, даже, даже если, не
 
 take part 	|принимать участие
 
+up until now	|до этого момента; до сих пор
+
+goes to great lengths to ensure |прилагать все усилия для гарантирования
+make every effort to ensure
+
 ----------------------------
 His students would not have the patience to read through the eight hundred pages of Programming in Scala.
 If you prefer to manually configure your Maven project rather than clone one of our samples
@@ -42,27 +47,36 @@ Hope you are doing great	|Надеюсь, у вас все отлично
 There are exceptions though | Однако есть исключения
 A shared pointer does share ownership 	| общий указатель ДЕЙСТВИТЕЛЬНО делит/разделяет права
 
+
+emerge		|появляться, ВСПЛЫВАТЬ(apper,pop); выходить(come);возникать(arise) [ɪˈmɜːʤ]
+to form		|сформироваться
+take shape	|обретать форму
+looming		|вырисовывающийся, надвигающийся, нависший, назревающий
+A solution is emerging	| вырисовывается решение
+the conclusion is obvious	|напрашивается вывод
+the conclusion is emerging | вырисовывается вывод
+turn out 	|получается, оказывается, выяснятеся
+
+in this way, thus, in that way, such way | таким образом
+
 flood	|наводнинеие, поток (малосодержательное нетематическое сообщение)
 
 abruptly	|резко(sharply), внезапно(suddenly) [əˈbrʌptlɪ]
 give up 	|сдаться, уступить; отказаться(refuse);бросить (quit)
-!eager		|нетерпеливый
 
-indeed		|Н.действительно,в самом деле;несомненно;даже,более того [ɪn'diːd]
+
+
 mere		|простой,чистый,обычный
 !chained	|прикованный, сцепленный
 !chain
-meaningful 	|значимый
 comes To 	|сводится к, приходить к
 rate		|С. ставка(bet), расценка(price), стоимость(cost); скорость(speed), частота(frequency);Г.оценивать(estimate)
 contrary 	|С.противоположность,противовес;П.противоположный(opposite),встречный(counter);Нар.наоборот;Прд.вопреки,наперекор (поместить в первый словарь)
-fulfilling	|осуществляющий, выполняющий;отвечающий,удовлетовряющий;С.выполнение
-fulfil/filfill	|выполнять(perform),исполнять(carry out),осуществлять(implement);соответствовать(satisfy,meet);отрабатывать,отработать(complete, work out)
 meet	|встречать(encounter), удовлетворять(satisfy);соответствовать(mathc), знакомиться(acquaint)
 acquaint |introduce, familiarize
+acquaint 	|знакомить с (чем либо), ознакомляться с (чем либо) [ə'kweɪnt]
+	acquainted  |знакомый, знающий, информированный
 Bootstrap	|Г.загружать(load);П.загрузочный(boot);С.загрузка
-bundled		|П.связанный(connected),поставляемый(supplied),сгруппированный(grouped);Г.связать(connect),поставлять(supply)
-impose		|навязать/навязывать, налагать, насаждать, установить/устанавливать, предъявлять
 
 rest assured | будьте уверены
 while		|Союз.в то время как, пока; тогда как;Н.не смотря на то, покуда;Союз.хотя(although), причем(when)
@@ -74,12 +88,18 @@ absorb		|поглащать, впитывать, усваивать
 
 prohibit	|Г.запрещать, препятствовать(dissuade);препятствовать, мешать(prevent,not promote)
 discourage	|Г.отговаривать(dissuade),разубеждать;препятствовать(превент),не способствовать(not promote)
-	discouraged |прич.разочарованный(frustrated); П.удручённый [dɪˈskʌrɪʤd]
+	discouraged |прич.разочарованный(frustrated), обескураженный(confused); П.удручённый(dejected) [dɪˈskʌrɪʤd]
 dissuade	|Г. разубеждать, отговаривать [dɪˈsweɪd]
 assure 		|Г. уверять; убеждать(convince,persuade) [əˈʃʊə]
 -------------------------------
 Мне нужно только сопроводить человека.
 I'm just here to give the man a ride.
+
+
+"Can I help you get there?"(Clear and concise)
+"Do you want me to show you the way?"(Direct and action-oriented)
+"Let's head over to target place together."(Collaborative and inclusive)
+"Would you like me to point you in the right direction?"(Offering guidance)
 
 let me guide you | позвольте мне проводить вас.
 come with me | сопровождать меня
@@ -98,3 +118,61 @@ I'm not really into 	|я не очень разбираюсь
 
 -------------------------------
 once upon a time 	|давным-давно
+
+but this assessment does not apply to the section | но эта оценка не касается раздела
+
+
+У меня есть зелёное яблоко и краснОЕ. I have a green apple and a red ONE.
+У меня есть зелёные яблоко и краснЫЕ. I have a green apple and (some) red ONES.
+
+У меня есть три сына, Марк - младший. I have two sons, Mark is the youngest one.
+У меня есть и синие джинсы, и зелёные тоже. I have blue jeans, and green ones, too.
+
+Какая у нас формула предложения? Субъект-Глагол-Объект. Одинокое прилагательное объектом не является, а слово "one" уже само по себе объект. Посему оно и необходимо.
+
+
+
+What do you imply by that statement.
+Are you implying that is should take action
+He tone seemed to impy that
+
+step in 	|вмешиваться, вступать
+
+-------------------------------
+getting paid	| получать зарплату
+receive salary 	| получать зарплату
+earn			| зарабатывать
+earn selary		| зарабатывать
+
+How did you get up here
+How are you here
+What are you doing here
+Who defend thir own lends and homes
+Righ to do that?
+This is our cause/arguments
+
+civilian | гражданское лицо
+peaceful citizen |мирный гражданин
+
+
+voltage behaves in a similar manner
+leading to a summed voltage
+Let's clarify the underlying principles that explain this behavior.
+circuit |схема, электросхема, электрическая цепь
+
+
+shortcomings |неудачи, просчёты, недостатки
+
+If any one can help me with the following questions
+
+
+How much has the tall changed?
+
+
+If any one can help me with the following questions
+
+you are stunning easy | ты сногсшибательна.
+
+to be precise	|быть точнее
+abstract out	|выделять
+round-robin strategy |циклическая стартегия

@@ -1,6 +1,75 @@
-По сути, Spring предлагает контейнер, часто называемый контекстом приложения Spring, который создает компоненты приложения и управляет ими. Эти компоненты, или bean-компоненты, объединяются внутри контекста Spring, образуя полноценное приложение.
+Пакеты org.springframework.beans и org.springframework.context являются основой для IoC-контейнера Spring Framework.
+Интерфейс BeanFactory предоставляет расширенный механизм конфигурации, способный управлять объектами любого типа.
+ApplicationContext является подинтерфейсом BeanFactory - следует его использовать всегда (кроме тех случае где есть веская причина не использовать его).
+
+// AnnotationConfigApplicationContext - (GenericApplicationContext и AnnatationConfigApplicationContext) - это основные точки входа в контейнер Spring.
+// ClassPathXmlApplicationContext
+// FileSystemApplicationContext
 
 
+В Spring объекты, которые составляют основу вашего приложения и управляются IoC-контейнером Spring, называются бинами (beans).
+
+Интерфейс org.springframework.context.ApplicationContext представляет IoC-контейнер Spring и отвечает за создание экземпляра, настройку и компонование бинов.
+
+Контейнер получает инструкции о том, какие объекты создавать, конфигурировать и компоновать путем считывания конфигурационных метаданных. Конфигурационные метаданные представлены в виде XML, аннотаций Java или кода Java.
+
+
+Несколько реализаций интерфейса ApplicationContext поставляются вместе с Spring. В автономных приложениях обычно создается экземпляр ClassPathXmlApplicationContext или FileSystemXmlApplicationContext.
+Хотя XML является традиционным форматом для определения конфигурационных метаданных, можно указать контейнеру использовать аннотации Java или код в качестве формата метаданных.
+  AnnotationConfigApplicationContext - содержит все общие постпроцессоры аннотаций.
+
+Spring container - состоит из Конфигурационных Метаданных и Pojo (составляющих бизнес объекты)
+  Конфигурационные Метдаданные - говорят как контейнеру следует создавать, конфигурировать икомпоновать объекты в приложении. 
+    - Это может быть xml.
+    - Конфигурация на базе аннотаций
+        2.0: @Required, 2.5: @Autowired, @PostConstruct и @PreDestroy, 3.0: @Inject, @Named.
+        Аннотации добавляются непосредственно в Java-классы с помощью специальных маркеров (например, @Component, @Service, @Configuration)
+        Аннотации определяют бины прямо в классах через @Component, @Service, @Repository
+    - Конфигурация на основе Java
+        @Configuration, @Bean, @Import и @DependsOn.
+        Java-конфигурация использует специальные классы конфигурации с методом @Configuration и методами @Bean
+        Java-конфигурация создает бины через методы с аннотацией @Bean в конфигурационных классах
+
+      Примечание:
+         --- @Required - устарл (нужно использовать InitializingBean.afterPropertiesSet() или @PostConstruct)
+         --- Аннотация @Inject может быть использована вместо аннотации @Autowired
+                @Autowired - можно и не ставить, если всего один конструктор по умочанию. Если несколько конструкторов то нжуно поставить.
+                  Устанавливается как над конструктором, так и над сеттрерами-методами, так и над полями класса.
+
+                  public class MovieRecommender {
+                    private final CustomerPreferenceDao customerPreferenceDao;
+                    @Autowired
+                    private MovieCatalog movieCatalog;
+                    @Autowired
+                    public MovieRecommender(CustomerPreferenceDao customerPreferenceDao) {
+                        this.customerPreferenceDao = customerPreferenceDao;
+                    }
+                    // ...
+                }
+
+
+
+Пример annotation-based конфигурации:
+  @Service
+  public class UserService {
+      @Autowired
+      private UserRepository userRepository;
+  }
+
+Пример Java-based конфигурации:
+  @Configuration
+  public class AppConfig {
+      @Bean
+      public UserService userService() {
+          return new UserService(userRepository());
+      }
+      
+      @Bean
+      public UserRepository userRepository() {
+          return new JpaUserRepository();
+      }
+  }
+--------------------------------------------------------
 Sprint
 
     Если вы хотите создать Spring web-приложение, просто добавьте зависимость spring-boot-starter-web, которая подтянет в проект все библиотеки, необходимые для разработки Spring MVC-приложений, таких как spring-webmvc, jackson-json, validation-api и Tomcat
@@ -23,11 +92,127 @@ Sprint
     </dependency>
     
 Создание основного класса приложения:
-    Этот последний шаг заключается в создании класса конфигурации и запуска приложения. Spring Boot поддерживает новую аннотацию @SpringBootApplication, которая эквивалентна использованию @Configuration, @EnableAutoConfiguration и @ComponentScan с их атрибутами по умолчанию
+    Этот последний шаг заключается в создании класса конфигурации и запуска приложения. 
+      Spring Boot поддерживает новую аннотацию @SpringBootApplication, которая эквивалентна использованию @Configuration, @EnableAutoConfiguration и @ComponentScan с их атрибутами по умолчанию
     
-    Нужно создать класс, аннотированный с помощью @SpringBootApplication, а Spring Boot включит автоматическую настройку и отсканирует ваши ресурсы в текущем пакете.    
-    
-    
+    Нужно создать класс, аннотированный с помощью @SpringBootApplication, а Spring Boot включит автоматическую настройку и отсканирует ваши ресурсы в текущем пакете.
+
+--------------------------------------------------------
+The interfaces BeanFactory and ApplicationContext represent the Spring IoC container.
+    ApplicationContext is a sub-interface of the BeanFactory.
+    The important features of ApplicationContext are resolving messages, supporting internationalization, publishing events, and application-layer specific contexts.
+
+    In Spring, a bean is an object that the Spring container instantiates, assembles, and manages.
+
+
+    As per Spring documentation in general, we should define beans for service layer objects, data access objects (DAOs), presentation objects, infrastructure objects such as Hibernate SessionFactories, JMS Queues, and so forth.
+
+    As we know, the primary job of the ApplicationContext is to manage beans.
+    As such, an application must provide the bean configuration to the ApplicationContext container. 
+        A Spring bean configuration consists of one or more bean definitions. 
+
+    Java-Based Configuration
+
+      @Configuration
+      public class AccountConfig {
+
+        @Bean
+        public AccountService accountService() {
+          return new AccountService(accountRepository());
+        }
+
+        @Bean
+        public AccountRepository accountRepository() {
+          return new AccountRepository();
+        }
+      }
+
+      Annotation-Based Configuration
+        In this approach, we first enable annotation-based configuration via XML configuration. Then we use a set of annotations on our Java classes, methods, constructors, or fields to configure beans. Some examples of these annotations are @Component, @Controller, @Service, @Repository, 
+          @Autowired, and @Qualifier.
+
+          @Autowired and @Inject
+            Replace @Autowired with @Inject; it works similarly to perform dependency injection.
+
+        The @Component annotation is used to mark a Java class as a Spring-managed bean. When you annotate a class with @Component, you're telling Spring that an instance of this class should be created and managed within the Spring ApplicationContext.
+
+        There are specialized versions of @Component that provide additional semantics:
+          @Service: Indicates that a class holds business logic.
+          @Repository: Indicates that a class is a data repository (and, additionally, it has exception translation enabled).
+          @Controller: Indicates that a class is a Spring MVC controller.
+
+
+--------------------------------------------------------
+
+
+Бины объявляются различными способами, корни большинства из них лежат в понятии Configuration. В качестве контейнера бинов выступает ApplicationContext. 
+    Чтобы передать инициализацию зависимости контексту, она помечается аннотацией @Autowired.
+
+
+Если мы просто создадим класс и попытаемся внедрить его объект с помощью аннотации @Autowired, то ничего не получится. Spring никак не реагирует на обычные классы. Чтобы превратить этот класс в бин, нужно пометить его аннотацией, например:
+
+  @Component — любой класс общего назначения, объект которого мы хотим получить в приложении
+  @Repository — репозитории
+  @RestController— контроллеры
+
+
+Изучим пример с репозиторием:
+
+  package io.hexlet.spring.repository;
+
+  import hexlet.code.model.User;
+  import org.springframework.data.jpa.repository.JpaRepository;
+  import org.springframework.stereotype.Repository;
+
+  @Repository
+  // Во время компиляции этот интерфейс превращается в конкретный класс
+  public interface UserRepository extends JpaRepository<User, Long> {}
+
+  Внедрение происходит так:
+  @RestController
+  @RequestMapping("/users")
+  public class UserController {
+
+      @Autowired
+      private UserRepository userRepository;
+  }
+
+
+-------------
+@SpringBootApplication is a convenience annotation that adds:
+  @Configuration: Tags the class as a source of bean definitions.
+  @EnableAutoConfiguration: Tells Spring Boot to start adding beans based on classpath settings.
+  @ComponentScan: Tells Spring Boot to scan the current package and its sub-packages for components, configurations, and services.
+
+
+
+Второй – это создание бина с помощью метода. Для этого нам нужно создать метод внутри любого класса, помеченного аннотацией @Configuration.
+  Проще всего это сделать в классе с методом main, потому что аннотация @SpringBootApplication автоматически добавляет аннотацию @Configuration:
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public Faker getFaker() { // Имя метода не важно
+        return new Faker();
+    }
+}
+Теперь Faker можно внедрять как обычную зависимость:
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UsersControllerTest {
+
+    @Autowired
+    private Faker faker;
+
+    @BeforeEach
+    public void setUp() {
+      // Тут создаем нужные данные
+    } 
 --------------------------------------------------------
 https://www.baeldung.com/spring-application-context
 The Spring ApplicationContext
@@ -94,11 +279,13 @@ public class MessageService {
 
 @Configuration
 public class MyConfiguration {
+
   @Bean
   public MessageDAO messageDAO() {
     MessageDAO bean = new MessageDAO();
     return bean;
   }
+
   @Bean
   public MessageService messageService() {
     MessageService bean = new MessageService();

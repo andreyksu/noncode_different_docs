@@ -1,0 +1,53 @@
+I've never heard this called "recursive" generics, and I don't think that's actually accurate since there is no actual recursion of anything involved. This is typically referred to as a "self-referential generic type" (Angelika Langer), or I've also heard it called a "self-bounding type" or a "self-bound".
+
+It appears a little mind bending at first because generics is a layer of abstraction that it takes time to get comfortable with, and those can be nested, and then add type bounds into the mix, there's a lot going on. If you forget about self-bounding types entirely and just work with type bounds and inheritance until you get comfortable, self-bounding types become much easier to deal with.
+
+	- Normal type: Foo
+	- Generic type: Foo<T>
+	- Nested generic type: Foo<List<T>>
+	- Bounded generic type: Foo<T extends Number> or Foo<T super Integer>
+	- Bounded nested generic types: Foo<T extends List<T>>
+	- Extending a generic type: Bar extends Foo<Integer>
+	- Generic type extending a generic type: Bar<T> extends Foo<T>
+	- Multiple bounds: Foo<T extends Comparable<T> & FizzBuzz>
+
+It's important to understand how generics works with inheritance. A lot of folks new to generics think that a Node<Integer> extends a Node<Number> in some way, but there is no inheritance relationship here, it's just two different nodes. It happens that the type contained by Node<Integer> extends the type contained by Node<Number>, but that's nothing to do with the nodes.
+
+It's also important to understand how wildcards work in generics, and one trick for clarifying wildcards is to read the wildcard as "something" or, for a bounded wildcard, "something that".
+
+List<?> is a "list of something" as opposed to a list of numbers, a list of integers, it's just some kind of type in there.
+
+List<? extends Comparable<Number>> is a "list of something that extends a comparable of numbers". Or, Foo<? extends List<? super Integer>> is a "foo of something that extends a list of something that is a superclass of integer".
+
+Once you have all this down, then the Enum<E extends Enum<E>> incantation becomes much easier to deal with. Just like you can have a list of a subtype of lists (like a List<LinkedList<T>>), or a list of any kind of list (List<L extends List<T>>, enum is parameterized by a subclass of itself. This just means that when an enum is created, it has to pass its own type as the generic type of its superclass, so enum PokerSuit is akin to class PokerSuit extends Enum<PokerSuit>. This way, the methods on Enum can return things of type PokerSuit.
+
+One problem with enums in Java is that they always extend Enum directly, so there's no room to extend Enum with an abstract class of your own and sneak in some more behavior. The only way to do that is to declare an interface and have your enum implement the interface if you want your enum to have special behavior:
+
+interface Foo { int getFoo(); }
+
+enum Bar implements Foo { … }
+enum Baz implements Foo { … }
+The problem with this is that when passing around all the different enums that implement Foo, they can all polymorphically be treated as a Foo, but Foo itself is not an enum and doesn't have any of Enum's methods. So when you write code that takes these Foo enums, it has to choose whether they should be treated as enums or Foos when it shouldn't, because they are actually both. (To solve this, you have to use the enum type trick, which is a whole other post.)
+
+
+Так же называется:
+	Bounded quantification
+	Curiously recurring template pattern
+
+
+Although not foolproof for fluent this typing:
+
+public static class A<T extends A<T>> {
+    public T doIt() {
+        return (T) this;
+    }
+}
+	
+public static class B extends A<B> {}
+	
+public static class C extends A<B> {}
+	
+public static void main(String[] args) {
+    new B().doIt().doIt();
+    new C().doIt().doIt();
+}

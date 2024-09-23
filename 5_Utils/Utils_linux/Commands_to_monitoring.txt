@@ -1,0 +1,150 @@
+Общее
+    atop
+        Настрйки:
+        vim /etc/init.d/atop +++
+        vim /etc/default/atop
+    
+
+    nmon
+
+    iostat
+    
+         iostat -p /dev/dm-0 1 - каждую секунду за интерфейсом
+         iostat -x - вся статистика
+    
+Загруза ЦП
+    mpstat -P ALL
+    
+Использование памяти процессом
+    pmap -d PID
+
+Вывод потоков ( LWP и NLWP)
+    ps -AlFH
+Потоки после процессов
+    ps -AlLm
+Вывод дерева процессов
+    ps -ejH
+    ps axjf
+    pstree
+    
+Процесс запущенный от имени VVV
+    ps -U vvv -u vvv u
+    
+Топ 10 потребляющих память
+    ps -auxf | sort -nr -k 4 | head 10
+       потребляющих ресурсы
+    ps -auxf | sort -nr -k 3 | head 10   
+
+
+Виртуальная память
+    vmstat 
+    
+В/В
+    iotop
+Сеть
+    iftop / jnettop / iptraf / nload / NetHogs / bmon
+    
+    
+ss вместо netstat
+    Открытые сокеты
+    ss -t -a
+    ss -u -a
+    
+Открытые файлы процесоом
+lsof – список открытых файлов, сетевых подключений и многое другое.
+
+
+
+apt install sysstat
+
+
+Чтобы проверить программные значения ulimit, введите команду ulimit -aS.
+Чтобы проверить аппаратные значения ulimit, введите команду ulimit -aH.
+
+/etc/security/limits.conf
+
+ulimit -n unlimited
+
+------------------------------------------------------------
+    
+PAATH="./for_load_result/"
+
+CODE_200_LONG_TIME=$PAATH"CODE_200_LONG_TIME.log"
+CODE_404=$PAATH"CODE_404.log"
+CODE_500=$PAATH"CODE_500.log"
+CODE_502=$PAATH"CODE_502.log"
+CODE_503=$PAATH"CODE_503.log"
+CODE_200_n=$PAATH"CODE_200_n.log"
+TARGET_FILE=$PAATH"Fourth.csv"
+
+rm -f $CODE_200_LONG_TIME $CODE_404 $CODE_500 $CODE_502 $CODE_503
+
+#exit 0
+
+awk -F, '($8 == "false" && $4 == 200) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_200_LONG_TIME
+awk -F, '($8 == "false" && $4 == 404) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_404
+awk -F, '($8 == "false" && $4 == 500) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_500
+awk -F, '($8 == "false" && $4 == 502) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_502
+awk -F, '($8 == "false" && $4 == 503) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_503
+awk -F, '($8 == "false" && $4 != 200) {print $1=strftime("%Y-%m-%d %H:%M:%S",$1/1000),$2,$3,$4,$5,$9}' $TARGET_FILE > $CODE_200_n
+
+wc -l $CODE_200_LONG_TIME
+wc -l $CODE_404
+wc -l $CODE_500
+wc -l $CODE_502
+wc -l $CODE_503
+wc -l $CODE_200_n
+
+
+----------------------------------------------------------
+lsof -i -P -n | grep LISTEN  # -P Подавляет первод номеров порта в имена
+lsof -i -a -u $USER 
+lsof -u <user>
+lsof -p <pid> #Открытые файлы процессом.
+lsof -i # Процессы использующие сетевое соединение.
+lsof -i -u ^root # Исключение пользователя.
+lsof -i <port-type>:<port-number> # Работающих на определённом порту
+        lsof -nP -iTCP -sTCP:LISTEN
+        lsof -P -i :3000 -s TCP:LISTEN
+        lsof -i :<PORT> #List all connection listening or connecting to port
+lsof -i <port-type>:<start-port>-<end-port> # Использующих ip6
+lsof -cpython
+lsof -cpython -c^python2.7
+lsof +d /usr/bin # Файлы и папки открытые в дир. но не под.дри.
+
+
+ss -tulpn
+    -l Display listening sockets
+    -t tcp -u udp -x unix - данные по установленным содинениям
+    -a Display all sockets (listening and non-listening)
+    -s full statistic
+    -e Display detailed information (including users)
+    -n Show numerical addresses instead of resolving
+    -p Show process information
+    -P Show process statistics
+    
+ss sport = :80
+ss dst :5228
+ss -a dst :5228 or src :mysql
+
+ss dst 104.21.3.132
+ss src 192.168.100.2
+    
+netstat -tulpn
+    -a tcp and udp listening
+    -ta tcp 
+    -au udp
+    -l all actively listening ports (both TCP and UDP)
+    
+    -s statistic
+    --statistics --raw
+    -tp - with pid
+    -i view send/receive stats by interface
+    
+    
+find -type f -iregex '.*\(First\|Second\).*.pdf' -exec bash -c "echo '' > \"{}\"" \;
+
+--------------------------------------------------------------------------------------------------------------------
+
+sudo mount  ~/Desktop/ubuntu-12.04.3-desktop-i386.iso /media/apt
+sudo apt-cdrom --no-mount -d=/media/apt add
