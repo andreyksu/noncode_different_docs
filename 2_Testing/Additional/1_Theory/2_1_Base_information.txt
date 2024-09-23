@@ -1,4 +1,6 @@
+
 http://software-testing.ru/forum/index.php?/topic/28768-voprosy-na-sobesedovanii-dlia-qa-sobesedovanie-dl/
+https://habr.com/ru/articles/257529/
 
 
 1. Уровни тестирования:
@@ -24,8 +26,8 @@ http://software-testing.ru/forum/index.php?/topic/28768-voprosy-na-sobesedovanii
 	все заранее предопределенные области ПО как «рисковые» протестированы и такой статус понижен/удален;
 	все ошибки тщательно задокументированы и доведены менеджменту/акционерам/заказчикам;
 	все тесты с высоким приоритетом пройдены и соответственно помечены как «Pass»;
-	все требования документации SRS (Спецификация требований ПО);
-	STR утверждено собственником проекта;
+	все требования документации SRS (Спецификация требований ПО); (software requirements specification)
+	STR утверждено собственником проекта; 
 	протестирована архитектура ПО;
 	ни одна серьезная или критическая ошибки не остаются открытыми;
 	90-95% всех тестов сделано.
@@ -95,3 +97,122 @@ http://software-testing.ru/forum/index.php?/topic/28768-voprosy-na-sobesedovanii
 	
 8. Что такое тестирование на основе рисков?
 	Определяются наиболее важные части системы, затем устанавливается порядок их тестирования, затем следует, собственно, тестирование.
+
+
+
+
+
+Конверсионное тестирование (сonversion testing) — это методика тестирования, что используется для проверки того, как имеющие в системе А данные будут преобразовываться и становиться доступными для использования в системе Б.
+
+Конформационное тестирование — это тестирование с целью убедиться, что ПО отвечает определенным отраслевым стандартам (IEEE, W3C и т.д.) для разработки ПО.
+
+
+https://developsense.com/blog/2009/09/when-do-we-stop-test
+
+When Do We Stop a Test?
+September 11, 2009
+Several years ago, around the time I started teaching Rapid Software Testing, my co-author James Bach recorded a video to demonstrate rapid stress testing. In this case, the approach involved throwing an overwhelming amount of data at an application’s wizard, essentially getting the application to stress itself out.
+
+The video goes on for almost six minutes. About halfway through, James asks, “You might be asking why I don’t stop now. The reason is that we’re seeing a steadily worsening pattern of failure. We could stop now, but we might see something even worse if we keep going.” And so the test does keep going. A few moments later, James provides the stopping heuristics: we stop when 1) we’ve found a sufficiently dramatic problem; or 2) there’s no apparent variation in the behaviour of the program—the program is essentially flat-lining; or 3) the value of continuing doesn’t justify the cost. Those were the stopping heuristics for that stress test.
+
+About a year after I first saw the video, I wanted to prepare a Better Software column on more general stopping heuristics, so James and I had a transpection session. The column is here. About a year after that, the column turned into a lightning talk that I gave in a few places.
+
+About six months after that, we had both recognized even more common stopping heuristics. We were talking them over at STAR East 2009 when Dale Emery and James Lyndsay walked by, and they also contributed to the discussion. In particular, Dale offered that in combat, the shooting might stop in several ways: a lull, “hold your fire”, “ceasefire”, “at ease”, “stand down”, and “disarm”. I thought that was interesting.
+
+Anyhow, here where we’re at so far. I emphasize that these stopping heuristics are heuristics. Heuristics are quick, inexpensive ways of solving a problem or making a decision. Heuristics are fallible—that is, they might work, and they might not work. Heuristics tend to be leaky abstractions, in that one might have things in common with another. Heuristics are also context-dependent, and it is assumed that they will be used by someone who has the competence and skill to use them wisely. So for each one, I’ve listed the heuristic and included at least one argument for not using the heuristic, or for questioning it.
+
+1. The Time’s Up! Heuristic. This, for many testers, is the most common one: we stop testing when the time allocated for testing has expired.
+
+Have we obtained the information that we need to know about the product? Is the risk of stopping now high enough that we might want to go on testing? Was the deadline artificial or arbitrary? Is there more development work to be done, such that more testing work will be required?
+
+2. The Piñata Heuristic. We stop whacking(бить) the program when the candy starts falling out—we stop the test when we see the first sufficiently(достаточно) dramatic problem.
+
+Might there be some more candy stuck in the piñata’s leg? Is the first dramatic problem the most important problem, or the only problem worth caring about? Might we find other interesting problems if we keep going? What if our impression of “dramatic” is misconceived, and this problem isn’t really a big deal?
+
+3. The Dead Horse Heuristic. The program is too buggy to make further testing worthwhile. We know that things are going to be modified so much that any more testing will be invalidated by the changes.
+
+The presumption here is that we’ve already found a bunch of interesting or important stuff. If we stop now, will miss something even more important or more interesting?
+
+4. The Mission Accomplished Heuristic. We stop testing when we have answered all of the questions that we set out to answer.
+
+Our testing might have revealed important new questions to ask. This leads us to the Rumsfeld Heuristic: “There are known unknowns, and there are unknown unknowns.” Has our testing moved known unknowns sufficiently into the known space? Has our testing revealed any important new known unknowns? And a hard-to-parse but important question: Are we satisified that we’ve moved the unknown unknowns sufficiently towards the knowns, or at least towards known unknowns?
+
+5. The Mission Revoked Heuristic. Our client has told us, “Please stop testing now.” That might be because we’ve run out of budget, or because the project has been cancelled, or any number of other things. Whatever the reason is, we’re mandated to stop testing. (In fact, Time’s Up might sometimes be a special case of the more general Mission Revoked, if it’s the client rather than ourselves that have made the decision that time’s up.)
+
+Is our client sufficiently aware of the value of continuing to test, or the risk of not continuing? If we disagree with the client, are we sufficiently aware of the business reasons to suspend testing?
+
+6. The I Feel Stuck! Heuristic. For whatever reason, we stop because we perceive there’s something blocking us. We don’t have the information we need (many people claim that they can’t test without sufficient specifications, for example). There’s a blocking bug, such that we can’t get to the area of the product that we want to test; we don’t have the equipment or tools we need; we don’t have the expertise on the team to perform some kind of specialized test.
+
+There might be any number of ways to get unstuck. Maybe we need help, or maybe we just need a pause (see below). Maybe more testing might allow us to learn what we need to know. Maybe the whole purpose of testing is to explore the product and discover the missing information. Perhaps there’s a workaround for the blocking bug; the tools and equipment might be available, but we don’t know about them, or we haven’t asked the right people in the right way; there might experts available to us, either on the testing team, among the programmers, or on the business side and we don’t realize it. There’s a difference between feeling stuck and being stuck.
+
+7. The Pause That Refreshes Heuristic. Instead of stopping testing, we suspend it for a while. We might stop testing and take a break when we’re tired, or bored, or uninspired to test. We might pause to do some research, to do some planning, to reflect on what we’ve done so far, the better to figure out what to do next. The idea here is that we need a break of some kind, and can return to the product later with fresh eyes or fresh minds.
+
+There’s another kind of pause, too: We might stop testing some feature because another has higher priority for the moment.
+
+Sure, we might be tired or bored, but is it more important for us to hang in there and keep going? Might we learn what we need to learn more efficiently by interacting with the program now, rather than doing work offline? Might a crucial bit of information be revealed by just one more test? Is the other “priority” really a priority? Is it ready for testing? Have we already tested it enough for now?
+
+8. The Flatline Heuristic. No matter what we do, we’re getting the same result. This can happen when the program has crashed or has become unresponsive in some way, but we might get flatline results when the program is especially stable, too—”looks good to me!”
+
+Is the application really crashed, or might it be recovering? Is the lack of response in itself an important test result? Does our idea of “no matter what we do” incorporate sufficient variation or load to address potential risks?
+
+9. The Customary Conclusion Heuristic. We stop testing when we usually stop testing. There’s a protocol in place for a certain number of test ideas, or test cases, or test cycles or variation, such that there’s a certain amount of testing work that we do, and we stop when that’s done. Agile teams (say that they) often implement this approach: “When all the acceptance tests pass, then we know we’re ready to ship.” Ewald Roodenrijs gives an example of this heuristic in his blog post titled When Does Testing Stop? He says he stops “when a certain amount of test cycles has been executed including the regression test”.
+
+This differs from “Time’s Up”, in that the time dimension might be more elastic than some other dimension. Since many projects seem to be dominated by the schedule, it took a while for James and me to realize that this one is in fact very common. We sometimes hear “one test per requirement” or “one positive test and one negative test per requirement” as a convention for establishing good-enough testing. (We don’t agree with it, of course, but we hear about it.)
+
+Have we sufficiently questioned why we always stop here? Should we be doing more testing as a matter of course? Less? Is there information available—say, from the technical support department, from Sales, or from outside reviewers—that would suggest that changing our patterns might be a good idea? Have we considered all the other heuristics?
+
+10. No more interesting questions. At this point, we’ve decided that no questions have answers sufficiently valuable to justify the cost of continuing to test, so we’re done. This heuristic tends to inform the others, in the sense that if a question or a risk is sufficiently compelling, we’ll continue to test rather than stopping.
+
+How do we feel about our risk models? Are we in danger of running into a Black Swan—or a White Swan that we’re ignoring? Have we obtained sufficient coverage? Have we validated our oracles?
+
+11. The Avoidance/Indifference Heuristic. Sometimes people don’t care about more information, or don’t want to know what’s going on the in the program. The application under test might be a first cut that we know will be replaced soon. Some people decide to stop testing because they’re lazy, malicious, or unmotivated. Sometimes the business reasons for releasing are so compelling that no problem that we can imagine would stop shipment, so no new test result would matter.
+
+If we don’t care now, why were we testing in the first place? Have we lost track of our priorities? If someone has checked out, why? Sometimes businesses get less heat for not knowing about a problem than they do for knowing about a problem and not fixing it—might that be in play here?
+
+Update: Cem Kaner has suggested one more:  Mission Rejected, in which the tester himself or herself declines to continue testing.  Have a look here.
+
+Any more ideas? Feel free to comment!
+
+
+
+https://developsense.com/blog/2024/07/making-progress-on-regression-testing
+Making Progress on Regression Testing
+
+
+
+Agile Manifesto содержит 4 основные идеи и 12 принципов.
+
+Основные идеи:
+	люди и взаимодействие важнее процессов и инструментов;
+	работающий продукт важнее исчерпывающей документации;
+	сотрудничество с заказчиком важнее согласования условий контракта;
+	готовность к изменениям важнее следования первоначальному плану.
+
+Основополагающие принципы Agile Manifesto:
+	наивысшим приоритетом признается удовлетворение заказчика за счёт ранней и бесперебойной поставки ценного программного обеспечения;
+	изменение требований приветствуется даже в конце разработки (это может повысить конкурентоспособность полученного продукта);
+	частая поставка работающего программного обеспечения (каждые пару недель или пару месяцев с предпочтением меньшего периода);
+	общение представителей бизнеса с разработчиками должно быть ежедневным на протяжении всего проекта;
+	проекты следует строить вокруг заинтересованных людей, которых следует обеспечить нужными условиями работы, поддержкой и доверием;
+	самый эффективный метод обмена информацией в команде — личная встреча;
+	работающее программное обеспечение — лучший измеритель прогресса;
+	спонсоры, разработчики и пользователи должны иметь возможность поддерживать постоянный темп на неопределённый срок;
+	постоянное внимание к техническому совершенству и хорошему проектированию увеличивают гибкость;
+	простота, как искусство не делать лишней работы, очень важна;
+	лучшие требования, архитектура и проектные решения получаются у самоорганизующихся команд;
+	команда регулярно обдумывает способы повышения своей эффективности и соответственно корректирует рабочий процесс.
+
+
+
+	Наивысшим приоритетом для нас является удовлетворение потребностей заказчика, благодаря регулярной и ранней поставке ценного программного обеспечения.
+	Изменение требований приветствуется даже на поздних стадиях разработки. Agile-процессы позволяют использовать изменения для обеспечения заказчику конкурентного преимущества.
+	Работающий продукт следует выпускать как можно чаще, с периодичностью от пары недель до пары месяцев.
+	На протяжении всего проекта разработчики и представители бизнеса должны ежедневно работать вместе.
+	Над проектом должны работать мотивированные профессионалы. Чтобы работа была сделана, создайте условия, обеспечьте поддержку и полностью доверьтесь им.
+	Непосредственное общение является наиболее практичным и эффективным способом обмена информацией как с самой командой, так и внутри команды.
+	Работающий продукт — основной показатель прогресса.
+	Инвесторы, разработчики и пользователи должны иметь возможность поддерживать текущий темп бесконечно. Agile помогает наладить такой устойчивый процесс разработки.
+	Постоянное внимание к техническому совершенству и качеству проектирования повышает гибкость проекта.
+	Простота — искусство минимизации лишней работы — крайне необходима.
+	Самые лучшие требования, архитектурные и технические решения рождаются у самоорганизующихся команд.
+	Команда должна систематически анализировать возможные способы улучшения эффективности и соответственно корректировать стиль своей работы[3].

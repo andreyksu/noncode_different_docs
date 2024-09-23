@@ -42,6 +42,19 @@ Hope you are doing great	|Надеюсь, у вас все отлично
 There are exceptions though | Однако есть исключения
 A shared pointer does share ownership 	| общий указатель ДЕЙСТВИТЕЛЬНО делит/разделяет права
 
+
+emerge		|появляться, ВСПЛЫВАТЬ(apper,pop); выходить(come);возникать(arise) [ɪˈmɜːʤ]
+to form		|сформироваться
+take shape	|обретать форму
+looming		|вырисовывающийся, надвигающийся, нависший, назревающий
+A solution is emerging	| вырисовывается решение
+the conclusion is obvious	|напрашивается вывод
+the conclusion is emerging | вырисовывается вывод
+turn out 	|получается, оказывается, выяснятеся
+to find out |выясняться
+
+in this way, thus, in that way, such way | таким образом
+
 flood	|наводнинеие, поток (малосодержательное нетематическое сообщение)
 
 abruptly	|резко(sharply), внезапно(suddenly) [əˈbrʌptlɪ]
@@ -61,7 +74,6 @@ fulfil/filfill	|выполнять(perform),исполнять(carry out),осу
 meet	|встречать(encounter), удовлетворять(satisfy);соответствовать(mathc), знакомиться(acquaint)
 acquaint |introduce, familiarize
 Bootstrap	|Г.загружать(load);П.загрузочный(boot);С.загрузка
-bundled		|П.связанный(connected),поставляемый(supplied),сгруппированный(grouped);Г.связать(connect),поставлять(supply)
 impose		|навязать/навязывать, налагать, насаждать, установить/устанавливать, предъявлять
 
 rest assured | будьте уверены
@@ -80,6 +92,12 @@ assure 		|Г. уверять; убеждать(convince,persuade) [əˈʃʊə]
 -------------------------------
 Мне нужно только сопроводить человека.
 I'm just here to give the man a ride.
+
+
+"Can I help you get there?"(Clear and concise)
+"Do you want me to show you the way?"(Direct and action-oriented)
+"Let's head over to target place together."(Collaborative and inclusive)
+"Would you like me to point you in the right direction?"(Offering guidance)
 
 let me guide you | позвольте мне проводить вас.
 come with me | сопровождать меня

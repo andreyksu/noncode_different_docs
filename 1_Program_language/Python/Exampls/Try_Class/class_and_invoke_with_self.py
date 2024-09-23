@@ -3,7 +3,9 @@ class A:
         self.a = a
 
     def __call__(self, *args, **kwargs): # Всё что передано входит в перечнь args
-        print("str(args) = %s" % str(args))
+        for i in args:
+            print("i = %s" % i)
+        print("self.a = %s" % str(self.a))
         print("__call__ of A class")
 
     def method(self):
@@ -13,7 +15,7 @@ class A:
 first = A("First")
 second = A("Second")
 
-first(second, "A", "B")
+first(second, "A", "B") # second будет в *args а не в self
 
-A.method(second)
 A.method(first)
+A.method(second)

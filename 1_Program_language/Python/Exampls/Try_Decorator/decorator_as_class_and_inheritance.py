@@ -12,7 +12,7 @@ def wrap(cls):
             print("It is __call__ of wrapper class")
             return cls.__call__(self.tragetObj, *args, **kwargs) # Вызов __call__ для декорированного класса.
 
-        def __getattr__(self, __name: str) -> Any:
+        def __getattr__(self, __name: str) -> Any: # В этом классе атрибуты не будут найдены. И будет вызван этот метод. А в этом методе происходит переадресация обёрнутому объекту.
             print('Will be called the method with name = %s' % __name)
             tmp = __name
             return getattr(self.tragetObj, tmp)

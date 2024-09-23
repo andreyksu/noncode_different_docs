@@ -1,5 +1,15 @@
 comprehension|С.понимание,осмысление,осознание [ˌkɔmprɪ'hen(t)ʃ(ə)n]
 comprehensive	|П.всестронний, полный, всеобъемлющий, исчерпывающий (от completely) [kɒmprɪˈhensɪv]
+	exhaust 	|Г.исчерповать, истощать(deplete);изнурять(wear);утомить(tire) [ɪgˈzɔːst]
+	exhaustion	|C. изнеможение;расходование;исчерпание;откачивание [ɪgˈzɔːsʧən]
+	exhaustive	|Прич.исчерпывающий(comprehensive);П.полный(complete), всестронний(comprehensive) [ɪgˈzɔːstɪv]
+insight		|С.понимание, постижение, знание(understanding,comprehension,knowledge);прозрение(inspiration,enlightenment,revelation)
+insight		|С.понимание/постижение,знание;проницательность ['ɪnˌsaɪt]
+	insights	|идеи
+sight		|зрение;поле зрения;видимость;рассматривание (insight)
+concise		|краткий(brief), ёмкий(capacious), локоничный(succinct); Прич.сжатый(condensed) [kənˈsaɪs]
+conceive	|Г.воспринимать,понимать(perceive),рассматривать(consider);постигать(comprehend) [kənˈsiːv]
+	conceived	|Прич.задуманный(planned),сконструированный(designed);П.придуманный(considered)
 completely	|Н.полностью, всеобъёмлюще, вполне
 realize		|Г.понимать,осозновать;осуществлять,реализовывать ['rɪəlaɪz]
 defeat		|Г.одерживать попеду,ставить в тупик,ликвидировать;С.проигрышь [dɪ'fiːt]
@@ -92,9 +102,6 @@ reveal		|С.обнаружение(find,detect,discover,find out),разобло
 	revealed |Прич. выявленный, обнаруженный, вскрытый, найденный (identified, found, opened, obtained) [rɪˈviːld]
 disrobe 	|раздаться,разоблачаться,разоблачать
 robe 		|халат, мантия, одеяние wardrobe - платяной шкаф
-exhaust 	|Г.исчерповать, истощать(deplete);изнурять(wear);утомить(tire) [ɪgˈzɔːst]
-exhaustion	|C. изнеможение;расходование;исчерпание;откачивание [ɪgˈzɔːsʧən]
-exhaustive	|Прич.исчерпывающий(comprehensive);П.полный(complete), всестронний(comprehensive) [ɪgˈzɔːstɪv]
 defer 		|Г. задерживать, откладывать;подчиняться,уступать
 	deferred	|П. отсроченный(delayed), отложенный, замедленный, задержанный  [dɪˈfɜːd]
 unlive		|уничножать,вернуть(прошлое),жить по иному
