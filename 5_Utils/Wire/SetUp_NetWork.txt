@@ -168,3 +168,7 @@ sudo systemctl restart networking
     
 Тонкая настройка сети в Linux
     https://habr.com/ru/companies/otus/articles/716962/
+
+--------------------------
+Для просмотра объема данных прошедших через сетевой интерфейс
+ip -s link show eth0

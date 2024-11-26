@@ -1,6 +1,12 @@
 Maven
-    artifactId is the name of the jar without version. If you created it, then you can choose whatever name you want with lowercase letters and no strange symbols. If it's a third party jar, you have to take the name of the jar as it's distributed. eg. maven, commons-math
-    groupId uniquely identifies your project across all projects. A group ID should follow Java's package name rules. This means it starts with a reversed domain name you control. For example, org.apache.maven, org.apache.commonss
+    artifactId
+        The name of the project or module (must be unique within a groupId).
+        <artifactId>my-application</artifactId>
+
+    groupId
+        Identifies the organization or group that created the project.
+        Follows a reverse domain name convention (similar to Java packages).
+        <groupId>com.example</groupId>
     
 ----------------------
 mvn archetype:generate maven-archetype-quickstart
@@ -12,3 +18,251 @@ mvn archetype:generate webapp-javaee7
     <artifactId>webapp-javaee7</artifactId>
     <version>1.1</version>
 </dependency>
+
+----------------------
+Parent_Pom (можно указать как версии зависимостей в dependencyManagement, так и сами зависимости dependencies)
+DOM (только указывается версия зависимостей в dependencyManagement)
+    
+    При этом dependencyManagement - не принуждает добавлять эту зависимость в dependencies - она просто отвечате за версию.
+        По этому dependencyManagement - не наследуется. А вот dependencies из родительского POM - наследуется.
+
+---------ParenPOM (Inherits configurations (plugins, dependencies, properties)). child inherits parent settings
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>parent-project</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging> <!-- Must be 'pom' -->
+
+    <!-- Shared dependencies (inherited by children) -->
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- Dependency management (versions only, not auto-included) -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>5.3.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+---------ChildPOM
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.example</groupId>
+        <artifactId>parent-project</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>child-module</artifactId>
+
+    <!-- Inherits JUnit and Spring versions from parent -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId> <!-- Version from parent's <dependencyManagement> -->
+        </dependency>
+    </dependencies>
+</project>
+
+---------BOM (Only manages dependency versions). only provides version definitions. Примером служит spring-boot-dependencies или JEE.
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>my-bom</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <!-- Only defines versions, does not add dependencies -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>5.3.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+---------POM
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>my-app</artifactId>
+    <version>1.0.0</version>
+
+    <!-- Import BOM to get version definitions -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>my-bom</artifactId>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Now use dependencies without versions (picked from BOM) -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId> <!-- Version from BOM -->
+        </dependency>
+    </dependencies>
+</project>
+
+-----------------------------------------------------------------------
+В maven при запуске следующий фазы, выполняются все предыдущие фазы.
+
+Однако можно указать чтоб выполнилась одна фаза, без выполнения предыдщих фаз.
+
+You can execute a plugin goal without running a full phase:
+    mvn <plugin-prefix>:<goal>
+        mvn compiler:compile    Compiles source code.
+        mvn surefire:test   Runs unit tests.
+        mvn jar:jar Creates a JAR file.
+        mvn dependency:tree Shows dependency tree.
+    # or
+    mvn <groupId>:<artifactId>:<version>:<goal>
+
+----------------
+If you need a fat JAR (with dependencies), use maven-assembly-plugin or maven-shade-plugin
+Both plugins are used to create fat JARs (executable JARs with dependencies), but they work differently.
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>3.6.0</version>
+    <configuration>
+        <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+----------------
+
+
+1. Очистка (Clean Lifecycle)
+    Удаляет сгенерированные файлы (например, target/).
+        clean – удаляет директорию target.
+
+2. Валидация (Default Lifecycle – Основной цикл сборки)
+    Основные фазы компиляции, тестирования и упаковки:
+        validate – проверяет корректность pom.xml.
+        compile – компилирует исходный код (src/main/java).
+        test-compile – компилирует тесты (src/test/java).
+        test – запускает юнит-тесты (JUnit, TestNG).
+        package – упаковывает код в JAR/WAR/EAR-файл.
+        verify – проверяет качество кода (например, через maven-failsafe-plugin).
+        install – устанавливает артефакт в локальный репозиторий (~/.m2/repository).
+        deploy – загружает артефакт в удалённый репозиторий (Nexus, Artifactory).
+
+3. Развёртывание (Site Lifecycle)
+    Генерация документации:
+        site – создаёт документацию (например, maven-site-plugin).
+        site-deploy – публикует документацию на сервер.
+
+
+        mvn clean     # Очистка
+        mvn compile   # Только компиляция
+        mvn test      # Компиляция + тесты
+        mvn package   # Компиляция + тесты + упаковка
+        mvn install   # Установка в локальный .m2
+        mvn deploy    # Публикация в удалённый репозиторий
+
+
+        сновные фазы: clean → compile → test → package → install → deploy.
+        Плагины: Каждая фаза вызывает связанные с ней цели плагинов.
+            maven-compiler-plugin привязан к compile.
+            maven-surefire-plugin (тесты) выполняется в test.
+
+
+compile   maven-compiler-plugin  Компилирует Java-код из src/main/java.
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+            <source>17</source>  <!-- Версия Java -->
+            <target>17</target>
+        </configuration>
+    </plugin>
+
+test maven-surefire-plugin
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+            <skipTests>false</skipTests>  <!-- Пропустить тесты? -->
+        </configuration>
+    </plugin>
+
+package    maven-jar-plugin
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+            <archive>
+                <manifest>
+                    <addClasspath>true</addClasspath>
+                    <mainClass>com.example.Main</mainClass>  <!-- Главный класс -->
+                </manifest>
+            </archive>
+        </configuration>
+    </plugin>
+
+install maven-install-plugin
+        Копирует собранный артефакт (JAR/WAR) в локальный репозиторий (~/.m2/repository).
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>3.1.1</version>
+        </plugin>
+
+package maven-shade-plugin
+    Созёт "fat JAR" (со всеми зависимостями внутри).
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.1</version>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>com.example.Main</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>

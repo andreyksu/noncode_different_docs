@@ -1,3 +1,9 @@
+Онлайн-лекция «Реактивные и нативные приложения на Java Spring и Quarkus»
+https://habr.com/ru/company/skillbox/blog/512432/
+
+Quarkus — сверхзвуковая субатомная Java. Краткий обзор фреймворка
+https://habr.com/ru/company/haulmont/blog/443242/
+
 Jax-RS
 
 1. Создать maven проект с архитипом:
