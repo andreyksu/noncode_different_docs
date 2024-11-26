@@ -1,5 +1,6 @@
 Load
 
+./apache-jmeter/bin/jmeter -n -t allure-jmeter-example.jmx -l result/result.jtl -j result/jmeter.log -e -o result/report/
 ---------------------------
 Кто-нибудь делает интеграцию тестов производительности с Allure TestOps?
 ---

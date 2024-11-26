@@ -1,0 +1,15 @@
+inference	|вывод(conclusion), заключение(assumption);выведение(deducation);подразумеваемый(implicit)
+			| figure out
+linient		|снисходительный (condescending), мягкий (mild)
+tap 		|отвод (branch);винтель(valve);постукоивать(knock)
+newly		|вновь;заново(again);недавно(recently)
+indeed		|Н.действительно(really),в самом деле(certainly);несомненно;даже,более того(moreover) [ɪn'diːd]
+			|в действительности(in fact, actually)
+lookup		|поиск(search), просмотр(preview)
+<>			|angle braces
+()			|parentheises
+{}			|curly brackets
+[]			|square brackets
+peculiar	|своеобразный(unique),особенный(spqcial),необычный(unusual)
+strictness	|строгость
+stale		|не свежий, затхлый(musty);просроченный(expired)

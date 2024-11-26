@@ -1,0 +1,74 @@
+In Java generics, the concept of recursive type bounds allows you to define a type parameter that is constrained to be a subtype of a certain type, which itself is parameterized by the same type parameter. This can lead to a form of self-referential type definitions, which can be useful in certain design patterns, particularly in fluent interfaces and builder patterns.
+
+### Understanding Recursive Type Bounds
+
+The syntax `T extends SomeType<T>` indicates that `T` is a type parameter that must extend `SomeType`, where `SomeType` is also parameterized by `T`. This creates a recursive relationship between the type parameter and the type it extends.
+
+#### Example of Recursive Type Bounds
+
+Let's look at a simple example to illustrate this concept:
+
+```java
+// A generic interface with a recursive type bound
+interface MyGenericInterface<T extends MyGenericInterface<T>> {
+    T doSomething();
+}
+
+// A concrete implementation of the interface
+class MyConcreteClass implements MyGenericInterface<MyConcreteClass> {
+    @Override
+    public MyConcreteClass doSomething() {
+        // Implementation here
+        System.out.println("Doing something in MyConcreteClass");
+        return this;
+    }
+}
+
+// Another concrete implementation
+class AnotherConcreteClass implements MyGenericInterface<AnotherConcreteClass> {
+    @Override
+    public AnotherConcreteClass doSomething() {
+        // Implementation here
+        System.out.println("Doing something in AnotherConcreteClass");
+        return this;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyConcreteClass myConcrete = new MyConcreteClass();
+        myConcrete.doSomething();
+
+        AnotherConcreteClass anotherConcrete = new AnotherConcreteClass();
+        anotherConcrete.doSomething();
+    }
+}
+```
+
+### Explanation of the Example
+
+1. **Generic Interface**: The interface `MyGenericInterface<T extends MyGenericInterface<T>>` defines a method `doSomething()` that returns an instance of type `T`. This means that any class implementing this interface must specify itself as the type parameter.
+
+2. **Concrete Implementations**: 
+   - `MyConcreteClass` implements `MyGenericInterface<MyConcreteClass>`, meaning it specifies itself as the type parameter. The `doSomething()` method returns an instance of `MyConcreteClass`.
+   - `AnotherConcreteClass` does the same for its own type.
+
+3. **Fluent Interface**: This pattern allows for a fluent interface, where methods can return the same type as the implementing class. This is particularly useful in builder patterns or when chaining method calls.
+
+### Unbounded Recursion
+
+The term "unbounded recursion" in the context of generics can be misleading. The recursive type bound `T extends SomeType<T>` does not create an infinite loop or recursion in the traditional sense. Instead, it establishes a relationship where `T` is constrained to be a specific type that adheres(придерживаться) to the structure defined by `SomeType`.
+
+### Limitations and Considerations
+
+1. **Type Safety**: This pattern ensures type safety, as the compiler can enforce that the methods return the correct type.
+
+2. **Complexity**: While recursive type bounds can be powerful, they can also make the code more complex and harder to understand. It's essential to use them judiciously.
+
+3. **Use Cases**: Common use cases for this pattern include:
+   - Fluent interfaces (e.g., builders).
+   - Type-safe hierarchies where subclasses need to return their own type.
+
+### Summary
+
+In summary, the expression `T extends SomeType<T>` in Java generics allows for the creation of recursive type bounds, enabling a type parameter to refer to itself in a constrained manner. This pattern is useful for creating fluent interfaces and ensuring type safety in method return types. While it can add complexity, it provides a powerful tool for designing flexible and type-safe APIs.

@@ -1,5 +1,7 @@
-dd = {'a':1, 'b':2} 
-dd1 = dict(a=1) 
-dd2 = dict(short='dict', long='dictionary') 
-dd3 =dict([(1, '1'), (2, '4')])
-print(dd, dd1, dd2, dd3, sep='\n\r')
+strr = "a&nbsp;&nbsp;&nbsp;&nbsp;b\n\nd\nl"
+
+intermediate = strr.replace("&nbsp;", " ").replace("\n", " ")
+print(intermediate)
+
+new_strr = [x for x in intermediate if x != " "]
+print(new_strr)

@@ -361,7 +361,7 @@ Lambda:
     У lambda область видимости такая же как и у обычного def. Имеет свои локальные переменные и видит объемлющие.
 
     def make_incrementor(n):
-        return lambda x, incr=n: x+incr # Т.к. лямбда не имеет доступа к аргументам объемлющей функции.
+        return lambda x, incr=n: x+incr # Т.к. лямбда не имеет доступа к аргументам объемлющей функции. You can "capture" the n when creating the lambda
 
     # LEGB
     def outer():
@@ -371,6 +371,8 @@ Lambda:
 
     innerFunc = outer()
     print(innerFunc(2))
+
+    (lambda x, y, z: x + y + z)(3, 8, 1)
 
     -------
     А можно даже сделать так

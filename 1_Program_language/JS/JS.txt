@@ -139,6 +139,39 @@ y == -x
 			let discounted = []
 
 =============================================================================
+Так для JS можно. Все присоединения присоедениня валидны. А вот в TS нет.
+
+		class MyStringArray {
+		    //someStr = ''; // И самое интересное, что назначенное значение в конструторе this.someStr = someStr; доступно всем методам. А вот в TS нужно объявить в классе, как в Java.
+
+		    constructor(someStr) {
+		        this.someStr = someStr;
+		    }
+		    innerAttahced(a) {
+		        return this.someStr + "___innerAttahced___" + a;
+		    }
+		}
+
+		MyStringArray.prototype['toPrototypeAttached'] = function (a) { // В TS так нельзя
+		    return this.someStr + "___toPrototypeAttached___" + a;
+		}
+
+
+		let iii = new MyStringArray("New Instance");
+
+		iii["a"] = "aa"; // В TS так нельзя
+
+		iii['toInstanceAttached'] = function (a) { // В TS так нельзя
+		    return this.someStr + '___toInstanceAttached___' + a;
+		}
+
+		console.log(iii.a)
+		console.log(iii.innerAttahced("VAR_A"))
+		console.log(iii.toPrototypeAttached("VAR_A"))
+		console.log(iii.toInstanceAttached("VAR_A"))
+
+
+
 Объект:
 	Помимо собственных свойств, объекты могут наследовать свойства от др. объектов, известных как ПРОТОТИПЫ.
 	
